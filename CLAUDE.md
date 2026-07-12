@@ -40,18 +40,24 @@ Smaller, more niche audience than guitar/piano — lower download ceiling, less 
 - RevenueCat (`@revenuecat/purchases-capacitor`) for the one-time IAP unlock
 - PostHog analytics (CDN snippet, no-op until a real project key is set)
 - Codemagic CI/CD (`codemagic.yaml`)
-- Audio samples: check `nbrosowsky/tonejs-instruments` before sourcing chanter/pipe samples elsewhere
+- Audio: recorded practice-chanter/pipe samples where available (check `nbrosowsky/tonejs-instruments` first), synthesized reed/drone tone as fallback for any note or instrument mode without a clean recorded sample — hybrid, not an either/or.
+- Instrument modes: practice chanter (primary, drives the whole curriculum) and full Highland pipes (same fingering logic, adds drone audio) both supported.
 - Bundle ID on the `com.pablohoney.*` namespace
 
-## Open questions (unresolved as of repo creation)
+## Decisions
 
-- Practice chanter only, or also model full Highland pipes (drone sound, same fingering)?
-- Audio: recorded practice-chanter samples vs. synthesized reed tone.
-- Tune selection and copyright/public-domain status per tune before committing to a repertoire list.
+- **Instruments:** support both practice chanter and full Highland pipes (drone + chanter, same fingering). Chanter remains the primary/default mode the curriculum is built around.
+- **Audio sourcing:** hybrid — recorded samples where available, synthesized tone filling gaps (missing notes, drone, or either instrument mode not yet sampled).
+- **Repertoire:** public-domain tunes only for initial release. No tune is added to the shipped repertoire without its public-domain status confirmed first.
+
+## Open questions
+
+- None blocking phase 1 as of this update — audio sourcing, instrument scope, and repertoire policy are resolved above. Revisit if a specific tune's public-domain status is ambiguous, or if sample sourcing for a given note/instrument proves impractical.
 
 ## Working Memory
 > Rolling snapshot, overwrite don't append.
 
 - **Repo created (2026-07-12):** `bagpipe-lab` created by the user directly (the ops-hub session's GitHub integration isn't authorized to create repos — 403 — same constraint noted in `highland-music-site`'s `CLAUDE.md`). This `CLAUDE.md` seeded from the strategy work done in that ops-hub session/`bagpipe-app-strategy.md` before the ops session's repo-adding connector got stuck, so a fresh session here starts with full context instead of none.
-- **App shell scaffolded (2026-07-12):** Vite + React + TS PWA in repo root, single-file-style `src/App.tsx` holding a placeholder for phase 1 ("Meet the chanter"). Capacitor added (`@capacitor/core`, `@capacitor/cli`, `@capacitor/ios`), `ios/` project generated and committed, bundle id `com.pablohoney.bagpipelab`. `codemagic.yaml` added mirroring the portfolio's Capacitor iOS build pattern. App Store checklist section added to README.
-- **Next concrete step:** wire up phase 1 ("Meet the chanter") — interactive SVG hole diagram with tap-to-hear for the 9 notes — once audio sample sourcing (recorded chanter samples vs. synthesized reed tone, per open questions above) is decided.
+- **App shell scaffolded (2026-07-12):** Vite + React + TS PWA in repo root, single-file-style `src/App.tsx` holding a placeholder for phase 1 ("Meet the chanter"). Capacitor added (`@capacitor/core`, `@capacitor/cli`, `@capacitor/ios`), `ios/` project generated and committed, bundle id `com.pablohoney.bagpipelab`. `codemagic.yaml` added mirroring the portfolio's Capacitor iOS build pattern. App Store checklist section added to README. Merged to `main` via PR #1.
+- **Open questions resolved (2026-07-12):** both instruments (chanter + full pipes) in scope; audio sourcing is hybrid (recorded samples + synthesized fallback); repertoire starts public-domain-only.
+- **Next concrete step:** wire up phase 1 ("Meet the chanter") — interactive SVG hole diagram with tap-to-hear for the 9 notes, chanter mode first.
