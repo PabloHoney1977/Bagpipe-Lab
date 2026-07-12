@@ -9,25 +9,28 @@ export type Note = {
   covered: boolean[]
 }
 
-// Standard Great Highland Bagpipe fingering chart. This is NOT a recorder-
-// style "lift one hole at a time" scale:
-//   - Low A and B lift from the bottom of the low hand (pinky, then ring).
-//   - C and D are cross-fingered: the pinky (R4) comes back down and a single
-//     higher low-hand hole opens (R2 for C, R1 for D).
+// Great Highland Bagpipe / smallpipe fingering chart, transcribed from the
+// user-provided fingering chart (see reference/fingering-chart.md). This is
+// NOT a recorder-style "lift one hole at a time" scale:
+//   - Low A, then B, lift from the bottom of the low hand (pinky, then ring).
+//   - C and D keep the pinky (R4) planted and lift the low hand above it
+//     progressively (C opens R2+R3; D opens R1+R2+R3).
 //   - Every note E and above keeps the low-hand index/middle/ring (R1-R3)
 //     covered while the top hand opens from the bottom up (ring for E, then
-//     middle for F, then index for High G); High A also lifts the thumb.
+//     middle for F, then index for High G).
+//   - High A lifts the thumb and the top index+middle, but the top ring (L3)
+//     comes back down and the low hand (R1-R3) stays covered.
 // Hole order: [thumb, L1, L2, L3 (top hand), R1, R2, R3, R4 (bottom hand)].
 export const NOTES: Note[] = [
   { name: 'Low G', freq: 392.0, covered: [true, true, true, true, true, true, true, true] },
   { name: 'Low A', freq: 440.0, covered: [true, true, true, true, true, true, true, false] },
   { name: 'B', freq: 493.88, covered: [true, true, true, true, true, true, false, false] },
-  { name: 'C', freq: 554.37, covered: [true, true, true, true, true, false, true, true] },
-  { name: 'D', freq: 587.33, covered: [true, true, true, true, false, true, true, true] },
+  { name: 'C', freq: 554.37, covered: [true, true, true, true, true, false, false, true] },
+  { name: 'D', freq: 587.33, covered: [true, true, true, true, false, false, false, true] },
   { name: 'E', freq: 659.25, covered: [true, true, true, false, true, true, true, false] },
   { name: 'F', freq: 739.99, covered: [true, true, false, false, true, true, true, false] },
   { name: 'High G', freq: 783.99, covered: [true, false, false, false, true, true, true, false] },
-  { name: 'High A', freq: 880.0, covered: [false, false, false, false, true, true, true, false] },
+  { name: 'High A', freq: 880.0, covered: [false, false, false, true, true, true, true, false] },
 ]
 
 let ctx: AudioContext | null = null
