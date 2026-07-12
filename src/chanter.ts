@@ -1,12 +1,19 @@
 export type Note = {
   name: string
   freq: number
-  /** hole 1 (top, nearest reed) .. hole 8 (bottom). true = covered/closed. */
+  /**
+   * 8 holes: [thumb (back, top hand), L1, L2, L3 (top hand front),
+   * R1, R2, R3, R4 (bottom hand front, R4 = pinky/bottom-most)].
+   * true = covered/closed.
+   */
   covered: boolean[]
 }
 
-// Standard Highland chanter fingering chart: holes uncover one at a time,
-// bottom-most first, as pitch rises. High G/A overblow with all or all-but-thumb open.
+// Standard Highland chanter fingering chart. Low G through F uncover the
+// front holes bottom-up with the thumb held down throughout. High G and
+// High A are overblown notes with distinct fingerings, not a continuation
+// of the same pattern: High G re-covers R1-R3 while opening the top hand
+// (except the thumb), and High A opens everything including the thumb.
 export const NOTES: Note[] = [
   { name: 'Low G', freq: 392.0, covered: [true, true, true, true, true, true, true, true] },
   { name: 'Low A', freq: 440.0, covered: [true, true, true, true, true, true, true, false] },
@@ -15,7 +22,7 @@ export const NOTES: Note[] = [
   { name: 'D', freq: 587.33, covered: [true, true, true, true, false, false, false, false] },
   { name: 'E', freq: 659.25, covered: [true, true, true, false, false, false, false, false] },
   { name: 'F', freq: 739.99, covered: [true, true, false, false, false, false, false, false] },
-  { name: 'High G', freq: 783.99, covered: [true, false, false, false, false, false, false, false] },
+  { name: 'High G', freq: 783.99, covered: [true, false, false, false, true, true, true, false] },
   { name: 'High A', freq: 880.0, covered: [false, false, false, false, false, false, false, false] },
 ]
 
