@@ -1,0 +1,249 @@
+import { AnatomyDiagram, ReedDiagram } from './AnatomyDiagram'
+import { FingerMapDiagram } from './FingerMapDiagram'
+import { Callout, Steps, Figure, FactList } from './ui'
+
+export function Welcome() {
+  return (
+    <div className="prose">
+      <p className="lede">
+        Welcome. This course takes you from never having held a chanter to playing real tunes
+        on the Great Highland Bagpipe — one small, solid step at a time.
+      </p>
+      <p>
+        Every piper in the world starts the same way: not on the pipes, but on the{' '}
+        <strong>practice chanter</strong>. It is a simple wooden or plastic pipe with a mouthpiece
+        at one end and finger holes down the front. You blow into it and cover holes to change the
+        note. No bag, no drones, no wrestling with air pressure — just your breath, your fingers,
+        and the tune.
+      </p>
+      <Callout kind="why" title="Why start here">
+        The pipes ask you to do four things at once: blow, squeeze the bag, keep the drones steady,
+        and finger the melody. That is too much for anyone on day one. The practice chanter lets you
+        master the single hardest and most important part — your fingers and your timing — before you
+        ever pick up the pipes. The fingering you learn here is <em>exactly</em> the same on the
+        pipes.
+      </Callout>
+      <h3>The path ahead</h3>
+      <p>You will move through the course in order. Each stage builds on the one before it:</p>
+      <FactList
+        items={[
+          { term: 'Fundamentals', detail: 'Hold the chanter, understand the reed, learn where your fingers go.' },
+          { term: 'The nine notes', detail: 'Meet each note and its fingering, one at a time.' },
+          { term: 'The scale', detail: 'Play the full run of notes, low to high and back, in time.' },
+          { term: 'Steady rhythm', detail: 'Play simple tunes graded on your timing and finger accuracy.' },
+          { term: 'Embellishments', detail: 'Add the grace-note movements that make piping sound like piping.' },
+          { term: 'Onto the pipes', detail: 'Carry everything you have learned across to the Highland pipes.' },
+        ]}
+      />
+      <p>Take your time. Steady beats fast, every single time. Let’s begin.</p>
+    </div>
+  )
+}
+
+export function Anatomy() {
+  return (
+    <div className="prose">
+      <p className="lede">Before you play it, get to know the instrument in your hands.</p>
+      <p>
+        A practice chanter comes apart in the middle into two pieces. The reed lives inside, seated
+        where the two halves meet.
+      </p>
+      <Figure caption="A practice chanter, from the blowing end down to the sole.">
+        <AnatomyDiagram />
+      </Figure>
+      <FactList
+        items={[
+          { term: 'Mouthpiece', detail: 'The narrow tube at the top. You blow into it with a steady, even breath.' },
+          { term: 'Upper section', detail: 'The top half of the chanter; it channels your air down to the reed.' },
+          { term: 'The reed', detail: 'A small double reed seated at the joint in the middle. This is what actually makes the sound.' },
+          { term: 'Lower section', detail: 'The bottom half, with the eight tone holes — seven down the front and one on the back for your thumb.' },
+          { term: 'Sole', detail: 'The slightly flared foot at the very bottom where the sound comes out.' },
+        ]}
+      />
+      <Callout kind="tip">
+        Practice chanters come in plastic and in wood (often African blackwood). Plastic is
+        near-indestructible and perfect to learn on. Wood sounds a touch warmer but needs more care.
+        Either is completely fine to start.
+      </Callout>
+    </div>
+  )
+}
+
+export function Reed() {
+  return (
+    <div className="prose">
+      <p className="lede">The reed is the heart of the chanter. Everything you play depends on it.</p>
+      <p>
+        Tucked inside, at the joint, is a small <strong>double reed</strong> — two thin blades of cane
+        or moulded plastic bound together, with a narrow slit between them. When you blow, air rushes
+        through that slit and the two blades vibrate rapidly against each other. That vibration is the
+        sound. It travels down the lower section and out through the tone holes and sole.
+      </p>
+      <Figure caption="A double reed: two blades with a slit between them, bound at the base.">
+        <ReedDiagram />
+      </Figure>
+      <Callout kind="why" title="One long, continuous tone">
+        Here is the single most important thing to understand about a chanter: as long as you are
+        blowing, it is <em>sounding</em>. You cannot tongue notes to separate them the way a flute or
+        trumpet player can, and you cannot stop a note without stopping the whole instrument. This one
+        fact shapes everything in piping — it is the reason grace notes exist, and you will meet them
+        later.
+      </Callout>
+      <h3>Waking the reed up</h3>
+      <p>
+        A cold, dry reed can be stiff and reluctant. A little warmth and moisture from your breath
+        brings it to life.
+      </p>
+      <Steps
+        items={[
+          'Blow a few gentle, warm breaths through the chanter before you expect a clean note.',
+          'Give it a moment. The reed settles and starts to speak more easily as it warms.',
+          'When you are done for the day, let the chanter dry before you put it away.',
+        ]}
+      />
+      <Callout kind="warning">
+        The reed is delicate. Never poke your finger or anything else into the slit between the
+        blades, and don’t bang the chanter on hard surfaces. A crushed reed won’t play.
+      </Callout>
+    </div>
+  )
+}
+
+export function Blowing() {
+  return (
+    <div className="prose">
+      <p className="lede">The goal is one thing: a steady, unwavering tone.</p>
+      <p>
+        Blowing a chanter is not about blowing <em>hard</em>. It is about blowing{' '}
+        <strong>evenly</strong> — the same gentle, constant pressure held right through a note and
+        across the gaps between notes. A wobbling breath makes a wobbling, wavering pitch, and it is
+        the first thing a trained ear notices.
+      </p>
+      <h3>Finding the right pressure</h3>
+      <Steps
+        items={[
+          'Cover all the holes and blow very softly — so softly the reed barely speaks.',
+          'Slowly add pressure until the note settles into a clear, bright, steady tone. That point is your target.',
+          'Keep adding pressure past it and the note turns thin, sharp, and strained — too much. Ease back to that clear, comfortable spot.',
+        ]}
+      />
+      <Callout kind="tip" title="Lean into it">
+        The reed sounds best at a pressure just a little above the bare minimum needed to make it
+        speak. Pipers call this “leaning into” the reed. It gives a fuller, more stable note than
+        blowing as softly as possible.
+      </Callout>
+      <Callout kind="why">
+        Steady blowing is the foundation the whole rest of the course sits on. When you play tunes
+        later, your fingers get all the attention — but it is a rock-steady breath underneath that
+        makes those tunes actually sound good.
+      </Callout>
+    </div>
+  )
+}
+
+export function Holding() {
+  return (
+    <div className="prose">
+      <p className="lede">A relaxed, correct hold now saves you from bad habits that are hard to undo later.</p>
+      <h3>Which hand goes where</h3>
+      <p>
+        Your <strong>left hand goes on top</strong>, nearest the mouthpiece, and your{' '}
+        <strong>right hand goes on the bottom</strong>. This is the standard for every Highland
+        piper, and it stays the same when you move to the pipes — so it is worth building the habit
+        from your very first note.
+      </p>
+      <Callout kind="warning">
+        This is true no matter which hand you write with. Left-handed players use the same hold. Fight
+        the temptation to swap — the whole tradition, and every tune book and teacher, assumes left on
+        top.
+      </Callout>
+      <h3>Posture</h3>
+      <Steps
+        items={[
+          'Sit or stand up straight, shoulders relaxed and down — not hunched over the chanter.',
+          'Let the chanter hang down and slightly out in front of you at a comfortable, natural angle.',
+          'Keep your wrists straight, so that only your fingers move when you play, not your whole arm.',
+          'Let your fingers rest with a soft, natural curve — not locked flat, not tightly clawed.',
+        ]}
+      />
+      <Callout kind="tip">
+        Check in with yourself often. Tension creeps into the shoulders, wrists, and jaw without you
+        noticing. A relaxed player plays cleaner and lasts longer.
+      </Callout>
+    </div>
+  )
+}
+
+export function FingerPlacement() {
+  return (
+    <div className="prose">
+      <p className="lede">
+        Every note is made by sealing and un-sealing holes. Getting your fingers right is the whole
+        game.
+      </p>
+      <Figure caption="Eight fingers over eight holes: left thumb on the back, three left fingers and four right fingers down the front.">
+        <FingerMapDiagram />
+      </Figure>
+      <p>
+        Eight holes, eight fingers. Your <strong>left thumb</strong> covers the single hole on the
+        back. Your <strong>left index, middle, and ring</strong> fingers cover the top three holes on
+        the front. Your <strong>right index, middle, ring, and little finger</strong> cover the bottom
+        four.
+      </p>
+      <h3>Use the pads, not the tips</h3>
+      <p>
+        Cover each hole with the soft <strong>pad</strong> of your finger — the flat, fleshy part just
+        below the tip — not the very point of the fingertip. Your fingers lie fairly flat across the
+        chanter rather than pressing straight down like piano keys.
+      </p>
+      <Callout kind="why" title="Why sealing matters so much">
+        A hole that is even slightly uncovered leaks air, and a leaking hole gives you a wrong note or
+        an ugly squeal instead of the note you wanted. Each covered hole must be sealed{' '}
+        <em>completely</em>. This is the number-one thing beginners get wrong — and the interactive
+        note diagrams in the next stage let you see exactly which holes need to be sealed for every
+        note.
+      </Callout>
+      <h3>Keep lifted fingers close</h3>
+      <p>
+        When a finger is <em>off</em> its hole, don’t fling it high into the air. Lift it just a
+        small amount — around half an inch — and keep it hovering right over its hole, ready to drop
+        back cleanly. Close, controlled fingers are fast fingers.
+      </p>
+      <Callout kind="tip">
+        Everyone’s hands are a different shape and size. Nudge each finger up or down a little until
+        every hole seals comfortably and your hand feels relaxed. There is a bit of personal fit in
+        finding your positions — that is normal.
+      </Callout>
+    </div>
+  )
+}
+
+export function ToThePipes() {
+  return (
+    <div className="prose">
+      <p className="lede">Everything you are building on the chanter is aimed at this moment.</p>
+      <p>
+        When your fingering is clean and your rhythm is steady, you are ready to carry it all across
+        to the Great Highland Bagpipe. The good news: <strong>the fingering is identical.</strong>{' '}
+        Every note and every movement you have learned transfers straight over. What is new is
+        everything <em>around</em> the fingering.
+      </p>
+      <FactList
+        items={[
+          { term: 'The bag', detail: 'You tuck a bag under your arm and squeeze it to store and push air, instead of blowing straight into the chanter.' },
+          { term: 'Blow and squeeze together', detail: 'You blow to fill the bag and squeeze to keep pressure steady — the two work in a constant give-and-take so the sound never wavers.' },
+          { term: 'The drones', detail: 'Three drones rest on your shoulder and sound a constant background chord. You learn to tune them and keep them steady.' },
+          { term: 'The pipe chanter', detail: 'Louder and reed-driven, but fingered exactly like your practice chanter.' },
+        ]}
+      />
+      <Callout kind="tip">
+        Most pipers spend months on the practice chanter before the pipes, and keep using it for the
+        rest of their playing lives to learn new tunes. It never stops being useful.
+      </Callout>
+      <p>
+        For now, this stage is a preview of where you’re headed. Keep working through the earlier
+        stages until your fingers know the way — the pipes will be waiting.
+      </p>
+    </div>
+  )
+}
