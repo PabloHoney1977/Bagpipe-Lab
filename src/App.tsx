@@ -1,43 +1,38 @@
 import { useState } from 'react'
-import { ChanterDiagram } from './ChanterDiagram'
-import { NOTES, playChanterNote } from './chanter'
+import { MeetTheChanter } from './MeetTheChanter'
+import { TheScale } from './TheScale'
+
+const PHASES = [
+  { label: 'Meet the chanter', render: () => <MeetTheChanter /> },
+  { label: 'The scale', render: () => <TheScale /> },
+]
 
 function App() {
-  const [selected, setSelected] = useState(0)
-  const note = NOTES[selected]
-
-  function selectAndPlay(index: number) {
-    setSelected(index)
-    playChanterNote(NOTES[index].freq)
-  }
+  const [phase, setPhase] = useState(0)
 
   return (
     <main className="trainer">
       <header className="trainer-header">
         <h1>Bagpipe Lab</h1>
-        <p className="phase-label">Phase 1 &middot; Meet the chanter</p>
+        <p className="phase-label">
+          Phase {phase + 1} &middot; {PHASES[phase].label}
+        </p>
       </header>
 
-      <section className="trainer-body">
-        <ChanterDiagram covered={note.covered} />
+      <nav className="phase-nav">
+        {PHASES.map((p, i) => (
+          <button
+            key={p.label}
+            type="button"
+            className={i === phase ? 'phase-tab active' : 'phase-tab'}
+            onClick={() => setPhase(i)}
+          >
+            {i + 1}. {p.label}
+          </button>
+        ))}
+      </nav>
 
-        <div className="note-panel">
-          <p className="note-name">{note.name}</p>
-          <div className="note-grid">
-            {NOTES.map((n, i) => (
-              <button
-                key={n.name}
-                type="button"
-                className={i === selected ? 'note-button active' : 'note-button'}
-                onClick={() => selectAndPlay(i)}
-              >
-                {n.name}
-              </button>
-            ))}
-          </div>
-          <p className="hint">Tap a note to hear it and see the fingering.</p>
-        </div>
-      </section>
+      {PHASES[phase].render()}
     </main>
   )
 }
