@@ -68,3 +68,29 @@ export function playChanterNote(freq: number) {
   osc.start(now)
   osc.stop(now + 0.9)
 }
+
+/** Short metronome click. `accent` marks the first beat of a bar. */
+export function playClick(accent = false) {
+  const audioCtx = getContext()
+  const now = audioCtx.currentTime
+
+  const osc = audioCtx.createOscillator()
+  osc.type = 'square'
+  osc.frequency.value = accent ? 1600 : 1100
+
+  const gain = audioCtx.createGain()
+  gain.gain.setValueAtTime(0.0001, now)
+  gain.gain.exponentialRampToValueAtTime(accent ? 0.16 : 0.1, now + 0.001)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05)
+
+  osc.connect(gain)
+  gain.connect(audioCtx.destination)
+
+  osc.start(now)
+  osc.stop(now + 0.06)
+}
+
+/** Ensure the audio context is running (call from a user gesture). */
+export function resumeAudio() {
+  getContext()
+}

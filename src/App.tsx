@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import { GUIDE_UNITS, GUIDE_FLAT, findGuideLesson } from './curriculum'
 import { MeetTheChanter } from './MeetTheChanter'
 import { TheScale } from './TheScale'
+import { RhythmLane } from './RhythmLane'
+import { EXERCISES } from './tunes'
 import { ComingSoon } from './ui'
 
 type Tab = 'guide' | 'scale' | 'play' | 'embellishments'
@@ -235,16 +237,51 @@ function ScaleTab() {
 }
 
 function PlayTab() {
+  const [mode, setMode] = useState<'along' | 'notes'>('along')
+  const [exerciseId, setExerciseId] = useState(EXERCISES[0].id)
+  const exercise = EXERCISES.find((e) => e.id === exerciseId) ?? EXERCISES[0]
+
   return (
     <div className="tool">
-      <ToolHeader title="Play" subtitle="Tap any note to hear it and see exactly which holes to seal." />
-      <MeetTheChanter />
-      <div className="tool-note">
-        <p>
-          <strong>Play-along tunes are coming.</strong> Soon this is where you’ll play simple melodies against a steady
-          beat, scored on your timing and finger accuracy.
-        </p>
+      <ToolHeader title="Play" subtitle="Play along in time, or explore each note freely." />
+
+      <div className="segmented">
+        <button type="button" className={mode === 'along' ? 'seg is-active' : 'seg'} onClick={() => setMode('along')}>
+          Play along
+        </button>
+        <button type="button" className={mode === 'notes' ? 'seg is-active' : 'seg'} onClick={() => setMode('notes')}>
+          Explore notes
+        </button>
       </div>
+
+      {mode === 'along' ? (
+        <>
+          <div className="exercise-picker">
+            {EXERCISES.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                className={e.id === exerciseId ? 'exercise-chip is-active' : 'exercise-chip'}
+                onClick={() => setExerciseId(e.id)}
+              >
+                {e.name}
+              </button>
+            ))}
+          </div>
+          <p className="exercise-desc">
+            {exercise.description} <span className="exercise-bpm">{exercise.bpm} bpm</span>
+          </p>
+          <RhythmLane key={exercise.id} exercise={exercise} />
+          <div className="tool-note">
+            <p>
+              These are practice patterns built from the scale. Real public-domain tunes arrive once the repertoire is
+              chosen.
+            </p>
+          </div>
+        </>
+      ) : (
+        <MeetTheChanter />
+      )}
     </div>
   )
 }
