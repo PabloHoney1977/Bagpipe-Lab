@@ -889,3 +889,191 @@ body {
   max-width: 100%;
   height: auto;
 }
+
+/* ---------------------------------------------------------------- */
+/* Play tab — segmented control, exercise picker, rhythm game       */
+/* ---------------------------------------------------------------- */
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.seg {
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.seg.is-active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.exercise-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.exercise-chip {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.exercise-chip:hover {
+  border-color: var(--accent);
+}
+
+.exercise-chip.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.exercise-desc {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+.exercise-bpm {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.rhythm {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'lane side'
+    'controls controls'
+    'score score'
+    'hint hint';
+  gap: 16px 20px;
+  align-items: start;
+}
+
+.rhythm-lane-wrap {
+  grid-area: lane;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.rhythm-canvas {
+  display: block;
+  width: 100%;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.rhythm-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rhythm-side svg {
+  width: 120px;
+  height: auto;
+}
+
+.rhythm-current {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.rhythm-controls {
+  grid-area: controls;
+  display: flex;
+  gap: 10px;
+}
+
+.tap-button {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  flex: 1;
+}
+
+.tap-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.rhythm-score {
+  grid-area: score;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.stat-good .stat-value { color: #3f7d4f; }
+.stat-bad .stat-value { color: #b3543b; }
+.stat-accent .stat-value { color: var(--accent); }
+
+.rhythm .hint {
+  grid-area: hint;
+}
+
+@media (prefers-color-scheme: dark) {
+  .stat-good .stat-value { color: #6fbf82; }
+  .stat-bad .stat-value { color: #d98066; }
+}
