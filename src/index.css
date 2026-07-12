@@ -4,8 +4,10 @@
   --bg: #f2f0e6;
   --border: #d3d1c1;
   --accent: #93641b;
-  --hole-off: #c9c7b8;
   --hole-on: #93641b;
+  --hole-open: #17110b;
+  --wood: #2c2117;
+  --wood-stroke: #17110b;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
@@ -24,8 +26,10 @@
     --bg: #171310;
     --border: #392e26;
     --accent: #cd9a3c;
-    --hole-off: #4a3d33;
     --hole-on: #cd9a3c;
+    --hole-open: #0b0805;
+    --wood: #362719;
+    --wood-stroke: #1c130c;
   }
 }
 
@@ -96,15 +100,26 @@ h1 {
   flex-wrap: wrap;
 }
 
-.chanter-reed,
-.chanter-body {
-  fill: none;
+.chanter-cap,
+.chanter-shaft,
+.chanter-bell {
+  fill: var(--wood);
+  stroke: var(--wood-stroke);
+  stroke-width: 1.5;
+}
+
+.chanter-ring {
+  fill: var(--accent);
+}
+
+.chanter-leader {
   stroke: var(--text-dim);
-  stroke-width: 2;
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
 }
 
 .hole {
-  stroke: var(--text-dim);
+  stroke: var(--wood-stroke);
   stroke-width: 2;
   transition: fill 0.15s ease;
 }
@@ -114,7 +129,18 @@ h1 {
 }
 
 .hole-open {
-  fill: var(--bg);
+  fill: var(--hole-open);
+}
+
+.thumb-hole {
+  stroke-dasharray: 3 2;
+}
+
+.thumb-label {
+  fill: var(--text-dim);
+  font-size: 10px;
+  font-family: var(--sans);
+  text-anchor: middle;
 }
 
 .hand-bracket {
