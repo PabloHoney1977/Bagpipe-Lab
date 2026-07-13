@@ -88,9 +88,20 @@ Free vs paid boundary (from CLAUDE.md): stages 0–3 free, 4–6 one-time unlock
 
 ## 4. Embellishment curriculum
 
-Two axes to teach on. The **finger pattern** (what the movement is) and — the
-insight from the timing-tree chart in `reference/embellishments.md` — **where it
-sits against the beat**:
+**The owner's core directive (2026-07-12): tunes first, ornaments layered on
+later.** Many tutors introduce embellishments too early. Better sequence:
+
+1. Learn a tune **plain** — melody and rhythm solid, no ornaments at all.
+2. Add **simple single grace notes** to that same tune.
+3. Then introduce **increasingly complex embellishments**, one at a time, onto
+   tunes the learner already knows.
+
+So ornaments are never taught in the abstract or up front — they're added to a
+tune that's already in the hands. [piping][owner]
+
+Two axes to teach each ornament on: the **finger pattern** (what the movement
+is) and — the insight from the timing-tree chart in `reference/embellishments.md`
+— **where it sits against the beat**:
 
 - ends on the beat (borrows time from the note *before*)
 - starts on the beat (borrows from the note *after*)
@@ -98,22 +109,23 @@ sits against the beat**:
 
 That beat-relationship is the thing learners most often get wrong, and it's
 directly visualisable in a falling-notes lane (does the movement resolve before /
-on / across the beat line?). We should teach and score it explicitly, not just
-the finger shape. [proposal]
+on / across the beat line?). Teach and score it explicitly, not just the finger
+shape. [proposal]
 
-**Introduction order — [needs owner].** Standard piping teaching roughly runs:
-single gracenotes → doublings → half doubling → throw on D → grip → taorluath →
-birl → strikes/catches → advanced. But the exact order, and *which tune*
-introduces each, is the owner's call. Proposed first pass:
+### First tune: Amazing Grace [owner]
 
-1. Doubling (the repeated-note fix) — *starts on the beat*
-2. G / D / E single gracenotes
-3. Throw on D — *across the beat*
-4. Grip — *ends on the beat*
-5. Taorluath — *ends on the beat*
-6. Birl — *starts on the beat*
+Public-domain (Newton's 1779 words; the "New Britain" melody, 1830s). It's the
+vehicle for the first ornaments, taught in this order **on the tune**:
 
-*(Owner: please reorder / correct, and name the tune context for each.)*
+1. Plain melody — steady rhythm, no ornaments (this is the stage-3 checkpoint).
+2. **High G grace notes**
+3. **D strike**
+4. **Light D throw** — *across the beat*
+5. **G catch** — *ends on the beat*
+
+Later tunes introduce the heavier movements (grip, taorluath, birl, etc.) the
+same way — layered onto a known melody. Exact ordering for those is still
+**[needs owner]**.
 
 ---
 
@@ -158,13 +170,23 @@ detection, and we don't need pitch — the fingering already tells us the note.
 
 ## 7. Open questions for the owner
 
-1. Does the GHB practice chanter play **High A** exactly as the smallpipe chart
-   shows (top ring back down, low hand covered)? (Last open fingering item.)
-2. **Embellishment order** and the **tune** you'd use to introduce each (§4).
-3. The **first tune** you'd put in front of a total beginner for stage 3, and
-   why that one. (Public-domain only.)
-4. The **faults** you see most and your go-to fix for each (§5).
-5. When *you* learned — what finally made it click, and what did the books/apps
+**Answered (2026-07-12):**
+- ✅ High A on the GHB practice chanter matches the chart (top ring back down,
+  low hand covered). Fingering grid is final.
+- ✅ First tune: **Amazing Grace** (public-domain — see §4).
+- ✅ Ornament philosophy: tunes plain first, then simple grace notes, then more
+  complex — layered onto known tunes (§4). First ornaments on Amazing Grace:
+  high-G grace notes → D strike → light D throw → G catch.
+
+**Still open:**
+1. The exact **pipe setting of Amazing Grace** — note-for-note melody and
+   rhythm. The chanter's lowest note is Low G (one step under the Low-A tonic),
+   so the usual "low" pickup has to be adapted; that arrangement choice is
+   yours. Paste a setting you like, or confirm the one I propose.
+2. **Ordering of the heavier movements** (grip, taorluath, birl…) and which
+   later tunes introduce them.
+3. The **faults** you see most and your go-to fix for each (§5).
+4. When *you* learned — what finally made it click, and what did the books/apps
    get wrong? (The stuff no source has.)
 
 ---
