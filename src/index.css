@@ -1077,3 +1077,84 @@ body {
   .stat-good .stat-value { color: #6fbf82; }
   .stat-bad .stat-value { color: #d98066; }
 }
+
+/* Tempo laddering + mastery */
+.stepup-button {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: 1px solid #3f7d4f;
+  background: #3f7d4f;
+  color: #fff;
+  cursor: pointer;
+  flex: 1;
+}
+
+.stepup-button:hover {
+  opacity: 0.92;
+}
+
+.rhythm-meta {
+  grid-area: hint;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: -4px;
+}
+
+.tempo-badge,
+.best-badge {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.tempo-badge {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.mastery-target {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.run-result {
+  grid-area: hint;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.run-result.is-mastered {
+  color: #3f7d4f;
+}
+
+@media (prefers-color-scheme: dark) {
+  .run-result.is-mastered {
+    color: #6fbf82;
+  }
+}
+
+/* place meta, result, score, hint in sensible order within the grid */
+.rhythm {
+  grid-template-areas:
+    'lane side'
+    'controls controls'
+    'meta meta'
+    'result result'
+    'score score'
+    'hint hint';
+}
+
+.rhythm-meta { grid-area: meta; }
+.run-result { grid-area: result; }
+.rhythm .hint { grid-area: hint; }

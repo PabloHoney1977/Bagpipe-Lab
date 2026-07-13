@@ -30,6 +30,20 @@ const GOOD_MS = 200
 const MISS_MS = 220 // a pending note this far past its beat is a miss
 const LANE_HEIGHT = 360
 
+const MASTERY_PCT = 85 // accuracy needed to step the tempo up
+const TEMPO_STEP = 6 // bpm added on a clean run
+const MAX_BPM = 120
+const BEST_KEY = 'bagpipe-lab-best'
+
+function loadBest(): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(BEST_KEY)
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {}
+  } catch {
+    return {}
+  }
+}
+
 export function RhythmLane({ exercise }: { exercise: Exercise }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const wrapRef = useRef<HTMLDivElement | null>(null)
@@ -39,9 +53,11 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   const [status, setStatus] = useState<'idle' | 'playing' | 'done'>('idle')
   const [score, setScore] = useState({ perfect: 0, good: 0, miss: 0 })
   const [current, setCurrent] = useState<GameNote | null>(null)
+  const [bpm, setBpm] = useState(exercise.bpm)
+  const [best, setBest] = useState<Record<string, number>>(() => loadBest())
 
   const total = exercise.notes.length
-  const beatMs = 60000 / exercise.bpm
+  const beatMs = 60000 / bpm
   const leadInMs = exercise.beatsPerBar * beatMs
 
   const stop = useCallback(() => {
@@ -58,6 +74,7 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
     setStatus('idle')
     setScore({ perfect: 0, good: 0, miss: 0 })
     setCurrent(null)
+    setBpm(exercise.bpm)
     drawStatic()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise.id])
@@ -279,6 +296,35 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
 
   const judged = score.perfect + score.good + score.miss
   const accuracy = judged ? Math.round(((score.perfect + score.good * 0.5) / total) * 100) : 0
+  const mastered = status === 'done' && accuracy >= MASTERY_PCT
+  const canStepUp = mastered && bpm < MAX_BPM
+  const bestPct = best[exercise.id]
+
+  // Record best accuracy per exercise when a run finishes.
+  useEffect(() => {
+    if (status !== 'done') return
+    setBest((prev) => {
+      if (accuracy <= (prev[exercise.id] ?? 0)) return prev
+      const next = { ...prev, [exercise.id]: accuracy }
+      try {
+        localStorage.setItem(BEST_KEY, JSON.stringify(next))
+      } catch {
+        /* ignore */
+      }
+      return next
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
+
+  function stepUpTempo() {
+    stop()
+    gameRef.current = null
+    setBpm((b) => Math.min(MAX_BPM, b + TEMPO_STEP))
+    setScore({ perfect: 0, good: 0, miss: 0 })
+    setCurrent(null)
+    setStatus('idle')
+    drawStatic()
+  }
 
   return (
     <div className="rhythm">
@@ -309,10 +355,32 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
             Stop
           </button>
         )}
-        <button type="button" className="tap-button" onClick={judge} disabled={status !== 'playing'}>
-          Tap
-        </button>
+        {canStepUp ? (
+          <button type="button" className="stepup-button" onClick={stepUpTempo}>
+            Step up to {Math.min(MAX_BPM, bpm + TEMPO_STEP)} bpm ›
+          </button>
+        ) : (
+          <button type="button" className="tap-button" onClick={judge} disabled={status !== 'playing'}>
+            Tap
+          </button>
+        )}
       </div>
+
+      <div className="rhythm-meta">
+        <span className="tempo-badge">{bpm} bpm</span>
+        <span className="best-badge">Best {bestPct != null ? `${bestPct}%` : '—'}</span>
+        <span className="mastery-target">Reach {MASTERY_PCT}% to speed up</span>
+      </div>
+
+      {status === 'done' ? (
+        <p className={mastered ? 'run-result is-mastered' : 'run-result'}>
+          {mastered
+            ? bpm >= MAX_BPM
+              ? `Clean at ${bpm} bpm — top of the ladder. Beautiful.`
+              : `Mastered at ${bpm} bpm. Step up when you’re ready.`
+            : `${accuracy}% this run. Aim for ${MASTERY_PCT}% to move the tempo up.`}
+        </p>
+      ) : null}
 
       <div className="rhythm-score">
         <Stat label="Perfect" value={score.perfect} tone="good" />
@@ -322,8 +390,8 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       </div>
 
       <p className="hint">
-        Tap the lane, the <strong>Tap</strong> button, or the spacebar as each note crosses the line. The chanter shows the
-        note coming up.
+        Tap the lane, the <strong>Tap</strong> button, or the spacebar as each note crosses the line. Start slow — the tempo
+        steps up only when you play a run clean.
       </p>
     </div>
   )
