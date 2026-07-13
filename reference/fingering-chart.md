@@ -45,6 +45,5 @@ Eight holes, listed in the order used by `covered[]` in `src/chanter.ts`:
 - **High A** is not all-open: thumb + top index (L1) + top middle (L2) lift,
   but the top ring (L3) comes back down and the whole low hand index/middle/
   ring (R1-R3) stays covered; pinky up.
-- Source chart is for the Scottish smallpipe. Confirm with the owner that the
-  GHB practice chanter uses this identical grid (it normally does), especially
-  the High A fingering, before treating it as final.
+- **Confirmed by the owner (2026-07-12):** the GHB practice chanter plays these
+  fingerings exactly as shown, including the High A. This grid is final.
