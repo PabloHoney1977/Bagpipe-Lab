@@ -1,5 +1,6 @@
 import { AnatomyDiagram, ReedDiagram } from './AnatomyDiagram'
 import { FingerMapDiagram } from './FingerMapDiagram'
+import { StaffDiagram } from './StaffDiagram'
 import { Callout, Steps, Figure, FactList } from './ui'
 
 export function Welcome() {
@@ -29,6 +30,7 @@ export function Welcome() {
         items={[
           { term: 'Fundamentals', detail: 'Hold the chanter, understand the reed, learn where your fingers go.' },
           { term: 'The nine notes', detail: 'Meet each note and its fingering, one at a time.' },
+          { term: 'Reading the music', detail: 'Learn how those nine notes and their timing are written on the page.' },
           { term: 'The scale', detail: 'Play the full run of notes, low to high and back, in time.' },
           { term: 'Steady rhythm', detail: 'Play simple tunes graded on your timing and finger accuracy.' },
           { term: 'Embellishments', detail: 'Add the grace-note movements that make piping sound like piping.' },
@@ -213,6 +215,130 @@ export function FingerPlacement() {
         Everyone’s hands are a different shape and size. Nudge each finger up or down a little until
         every hole seals comfortably and your hand feels relaxed. There is a bit of personal fit in
         finding your positions — that is normal.
+      </Callout>
+    </div>
+  )
+}
+
+export function NotationBasics() {
+  return (
+    <div className="prose">
+      <p className="lede">
+        Bagpipe sheet music looks like any other sheet music at a glance — but it reads far more
+        simply than the piano or guitar music you may have seen before.
+      </p>
+      <p>
+        Like almost all instrumental music, pipe tunes are written on a standard five-line staff in{' '}
+        <strong>treble clef</strong>. That part is completely ordinary. What is unusual is how little
+        else there is to learn.
+      </p>
+      <FactList
+        items={[
+          {
+            term: 'Only nine notes, ever',
+            detail:
+              'The chanter can only play Low G, Low A, B, C, D, E, F, High G, and High A — the same nine notes from the Play tab’s note explorer. Whatever is on the page, it is always one of those nine.',
+          },
+          {
+            term: 'No sharps or flats',
+            detail:
+              'A written note always means its plain, natural letter. Pipe music is never written with a key signature and essentially never uses an accidental.',
+          },
+          {
+            term: 'One range, forever',
+            detail:
+              'The chanter’s entire range is Low G up to High A — under two octaves. Learn where those nine notes sit on the staff once, and you have learned the whole instrument’s range. There is no more range to discover later.',
+          },
+        ]}
+      />
+      <Callout kind="why" title="Why this matters">
+        The chanter is a <strong>fixed-pitch instrument</strong> — every fingering produces one exact
+        pitch that never bends or slides. Because there is nothing to adjust by ear, there is no need
+        for accidentals to warn you about it, and no need for a key signature to set one up. Most
+        instruments take years to sight-read fluently because their music can span many octaves and
+        many keys. The chanter's tiny, fixed range is exactly why piping is one of the fastest
+        instruments to learn to read.
+      </Callout>
+      <p>
+        The next lesson maps each of the nine notes onto the staff, so you can look at any bar of
+        pipe music and know instantly which note to play. The one after that covers timing — how the
+        shape of a note tells you how long to hold it.
+      </p>
+    </div>
+  )
+}
+
+export function RhythmBasics() {
+  return (
+    <div className="prose">
+      <p className="lede">
+        Once you know which of the nine notes is which, the only other thing the page tells you is{' '}
+        <em>when</em> to play them.
+      </p>
+      <h3>Note lengths</h3>
+      <p>
+        A note's shape tells you how long it lasts, measured in <strong>beats</strong> — the same
+        steady pulse a metronome ticks out.
+      </p>
+      <FactList
+        items={[
+          { term: 'Quarter note', detail: 'One full beat. The basic unit most tunes are built from.' },
+          { term: 'Eighth note', detail: 'Half a beat. Two eighth notes fill the space of one quarter note, and are usually beamed together with a bar joining their stems.' },
+          { term: 'Half note', detail: 'Two beats — held twice as long as a quarter note.' },
+          { term: 'Dotted note', detail: 'A dot after a note adds half its value again. A dotted quarter note lasts one and a half beats.' },
+        ]}
+      />
+      <h3>Bars and time signatures</h3>
+      <p>
+        Vertical bar lines divide the music into equal groups of beats. The <strong>time
+        signature</strong> at the start of the tune — two stacked numbers, like <code>2/4</code> or{' '}
+        <code>6/8</code> — tells you how many beats fill each bar and what kind of note counts as one
+        beat.
+      </p>
+      <FactList
+        items={[
+          { term: '2/4 marches', detail: 'Two beats per bar. The most common time signature for Highland marches.' },
+          { term: '6/8 jigs', detail: 'Six beats per bar, felt as two groups of three — the lilting jig feel.' },
+          { term: '4/4 reels & strathspeys', detail: 'Four beats per bar. Strathspeys add a distinctive snapping dotted rhythm.' },
+          { term: '3/4 and 9/8', detail: 'Used for waltzes and retreat marches, among others.' },
+        ]}
+      />
+      <Callout kind="tip" title="You already know this feel">
+        This is exactly what the <strong>Play</strong> tab's falling-notes lane turns into something
+        you can feel instead of just read: the tempo (bpm) sets the pulse, the time signature sets how
+        the beats group into bars, and each note's length is how long its lane takes to fall. Reading
+        the shapes on a page and feeling the beat in the Play tab are the same skill, from two
+        directions.
+      </Callout>
+    </div>
+  )
+}
+
+export function StaffNotes() {
+  const ascending = ['Low G', 'Low A', 'B', 'C', 'D', 'E', 'F', 'High G', 'High A']
+  return (
+    <div className="prose">
+      <p className="lede">Here is where every note the chanter can play sits on the staff, low to high.</p>
+      <Figure caption="The nine chanter notes, ascending. Bottom line of the staff is unused — Low G is one line up from it.">
+        <StaffDiagram notes={ascending.map((note) => ({ note }))} />
+      </Figure>
+      <FactList
+        items={[
+          { term: 'Low G', detail: 'The 2nd line from the bottom. The very bottom line of the staff is not used by any chanter note.' },
+          { term: 'Low A → F', detail: 'From there, each note climbs one line or space at a time — Low A, B, C, D, E, F — right up to F on the top line.' },
+          { term: 'High G', detail: 'Floats just above the staff, in the open space above the top line. No ledger line needed.' },
+          { term: 'High A', detail: 'One step higher still, sitting on a short ledger line drawn above the staff — the only note that needs one.' },
+        ]}
+      />
+      <Callout kind="tip" title="Cross-check it by ear">
+        Open the <strong>Play</strong> tab's note explorer and tap through the nine notes while you
+        look back at this diagram. Matching the sound, the fingering, and the staff position together
+        is what makes reading fast and automatic.
+      </Callout>
+      <Callout kind="why">
+        Because the chanter only ever uses these nine positions, you never have to work out which
+        octave a note belongs to the way a piano or guitar player does. Once this diagram is familiar,
+        you have learned to sight-read pitch on the chanter — for good.
       </Callout>
     </div>
   )

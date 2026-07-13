@@ -891,6 +891,32 @@ body {
 }
 
 /* ---------------------------------------------------------------- */
+/* Staff notation diagram                                           */
+/* ---------------------------------------------------------------- */
+
+.staff-line,
+.staff-ledger {
+  stroke: var(--text-dim);
+  stroke-width: 1.5;
+}
+
+.staff-stem {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+.staff-note {
+  fill: var(--text);
+}
+
+.staff-note-label {
+  fill: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--sans);
+}
+
+/* ---------------------------------------------------------------- */
 /* Play tab — segmented control, exercise picker, rhythm game       */
 /* ---------------------------------------------------------------- */
 

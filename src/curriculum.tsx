@@ -6,6 +6,9 @@ import {
   Blowing,
   Holding,
   FingerPlacement,
+  NotationBasics,
+  RhythmBasics,
+  StaffNotes,
   ToThePipes,
 } from './content'
 
@@ -37,6 +40,31 @@ export const GUIDE_UNITS: Unit[] = [
       { id: 'blowing', title: 'Blowing steadily', subtitle: 'The one skill under everything', render: () => <Blowing /> },
       { id: 'holding', title: 'Holding the chanter', subtitle: 'Hands, posture, and a relaxed hold', render: () => <Holding /> },
       { id: 'fingers', title: 'Finger placement', subtitle: 'Where your fingers go and how to seal', render: () => <FingerPlacement /> },
+    ],
+  },
+  {
+    id: 'reading',
+    title: 'Reading the music',
+    summary: 'Bagpipe notation looks like any other sheet music, but it reads far simpler.',
+    lessons: [
+      {
+        id: 'notation-basics',
+        title: 'Why bagpipe notation is simple',
+        subtitle: 'One clef, one range, no sharps or flats',
+        render: () => <NotationBasics />,
+      },
+      {
+        id: 'rhythm-basics',
+        title: 'Reading the rhythm',
+        subtitle: 'Note lengths, bar lines, and time signatures',
+        render: () => <RhythmBasics />,
+      },
+      {
+        id: 'staff-notes',
+        title: 'The staff, note by note',
+        subtitle: 'Matching each of the nine notes to its place on the stave',
+        render: () => <StaffNotes />,
+      },
     ],
   },
   {
