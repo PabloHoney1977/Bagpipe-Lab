@@ -18,6 +18,49 @@ export type Exercise = {
   notes: ExerciseNote[]
 }
 
+// Proposed setting of Amazing Grace (public domain: Newton's 1779 words + the
+// 1830s "New Britain" melody). Set with D as the tonic so it fits the chanter's
+// Low A -> High A range (the pickup lands on Low A, the high phrase on High A).
+// Melody only, no grace notes yet (tunes are learned plain first). This is a
+// DRAFT pending the owner's correction of the exact notes and rhythm.
+const AMAZING_GRACE: Exercise = {
+  id: 'amazing-grace',
+  name: 'Amazing Grace (draft)',
+  description: 'The first real tune — melody only for now. A draft setting to be corrected; grace notes come later.',
+  bpm: 50,
+  beatsPerBar: 3,
+  notes: [
+    { note: 'Low A', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'E', beats: 2 },
+    { note: 'D', beats: 1 },
+    { note: 'B', beats: 2 },
+    { note: 'Low A', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'E', beats: 3 },
+    { note: 'F', beats: 1 },
+    { note: 'High A', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'High A', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'E', beats: 2 },
+    { note: 'D', beats: 1 },
+    { note: 'B', beats: 2 },
+    { note: 'Low A', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'F', beats: 1 },
+    { note: 'D', beats: 2 },
+    { note: 'E', beats: 1 },
+    { note: 'D', beats: 3 },
+  ],
+}
+
 export const EXERCISES: Exercise[] = [
   {
     id: 'steady-low-a',
@@ -56,4 +99,5 @@ export const EXERCISES: Exercise[] = [
       (note) => ({ note, beats: 1 }),
     ),
   },
+  AMAZING_GRACE,
 ]
