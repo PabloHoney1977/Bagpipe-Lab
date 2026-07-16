@@ -61,22 +61,30 @@ const AMAZING_GRACE: Exercise = {
   ],
 }
 
+// A chanter sounds one unbroken tone: a repeated pitch can't be re-articulated
+// without a separating grace note (see reference/instrument-knowledge.md §1).
+// So the first pulse exercise can't be "tap Low A on every beat" — that's
+// unplayable. It has to MOVE between different pitches; the pitch change is the
+// only articulation available until grace notes are introduced. Every exercise
+// below therefore avoids adjacent same-pitch notes (enforced by the guard at
+// the foot of this file). A steady single tone is a blowing exercise, done on
+// the real chanter — the Guide's "Blowing steadily" stage — not a tap drill.
 export const EXERCISES: Exercise[] = [
-  {
-    id: 'steady-low-a',
-    name: 'Steady Low A',
-    description: 'Eight steady beats on Low A. Feel the pulse before you add anything.',
-    bpm: 60,
-    beatsPerBar: 4,
-    notes: Array.from({ length: 8 }, () => ({ note: 'Low A', beats: 1 })),
-  },
   {
     id: 'a-b-alternate',
     name: 'Low A & B',
-    description: 'Alternate two neighbouring notes in time — your first real finger move on the beat.',
+    description: 'Rock between two neighbouring notes on the beat — your first steady pulse, and your first finger move.',
     bpm: 60,
     beatsPerBar: 4,
     notes: Array.from({ length: 8 }, (_, i) => ({ note: i % 2 === 0 ? 'Low A' : 'B', beats: 1 })),
+  },
+  {
+    id: 'low-hand-walk',
+    name: 'Low-hand walk',
+    description: 'Step up the bottom hand and back — Low A, B, C, D, C, B. A little more finger movement, still rock-steady.',
+    bpm: 58,
+    beatsPerBar: 3,
+    notes: ['Low A', 'B', 'C', 'D', 'C', 'B'].map((note) => ({ note, beats: 1 })),
   },
   {
     id: 'scale-up',
@@ -101,3 +109,23 @@ export const EXERCISES: Exercise[] = [
   },
   AMAZING_GRACE,
 ]
+
+// Guard against re-introducing the "Steady Low A" trap: no plain exercise may
+// place the same pitch on two adjacent beats, because a chanter can't restrike
+// a repeated note without a grace note (not yet a feature). Fails loudly in dev
+// so a bad exercise is caught the moment it's written, never shipped.
+// See reference/instrument-knowledge.md §1 and §6.
+function assertPlayablePlain(exercises: Exercise[]) {
+  for (const ex of exercises) {
+    for (let i = 1; i < ex.notes.length; i++) {
+      if (ex.notes[i].note === ex.notes[i - 1].note) {
+        throw new Error(
+          `Exercise "${ex.id}" repeats ${ex.notes[i].note} on adjacent beats — a chanter ` +
+            `can't restrike a note without a grace note. See reference/instrument-knowledge.md.`,
+        )
+      }
+    }
+  }
+}
+
+if (import.meta.env.DEV) assertPlayablePlain(EXERCISES)

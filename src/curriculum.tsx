@@ -201,7 +201,7 @@ export const STAGES: Stage[] = [
         the <strong>Play</strong> tab.
       </p>
     ),
-    ctas: [{ label: 'Feel a steady pulse', preset: { tab: 'play', playMode: 'feel', exerciseId: 'steady-low-a' } }],
+    ctas: [{ label: 'Feel a steady pulse', preset: { tab: 'play', playMode: 'feel', exerciseId: 'a-b-alternate' } }],
     why: () => <RhythmBasics />,
   },
 
@@ -235,17 +235,18 @@ export const STAGES: Stage[] = [
     time: 'Daily, 10 min',
     concept: (
       <p>
-        Rhythm is graded before anything fancy. Hold a rock-steady pulse on simple patterns and let the tempo ladder
-        speed you up only when you play clean.
+        Rhythm is graded before anything fancy. Because a chanter can’t restrike the same note — the tone never stops —
+        your first pulse work <em>moves</em> between notes on the beat. Hold it rock-steady and let the tempo ladder speed
+        you up only when you play clean.
       </p>
     ),
     ctas: [
-      { label: 'Practise Steady Low A', preset: { tab: 'play', playMode: 'feel', exerciseId: 'steady-low-a' } },
-      { label: 'Then Low A & B', preset: { tab: 'play', playMode: 'feel', exerciseId: 'a-b-alternate' } },
+      { label: 'Rock Low A & B', preset: { tab: 'play', playMode: 'feel', exerciseId: 'a-b-alternate' } },
+      { label: 'Then the low-hand walk', preset: { tab: 'play', playMode: 'feel', exerciseId: 'low-hand-walk' } },
     ],
     checklist: [
-      'Play “Steady Low A” until you hit 85% and can step the tempo up.',
-      'Move to “Low A & B” — your first finger move on the beat.',
+      'Play “Low A & B” — rock between two notes on the beat — until you hit 85% and can step the tempo up.',
+      'Move to the “Low-hand walk” for a little more finger movement, still dead on the pulse.',
       'Climb the tempo ladder a notch at a time; never faster than you can play cleanly.',
     ],
     mastery: 'Done when both patterns sit above 85% at a tempo that feels comfortable.',

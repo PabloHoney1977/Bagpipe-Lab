@@ -91,9 +91,11 @@ export function Reed() {
       <Callout kind="why" title="One long, continuous tone">
         Here is the single most important thing to understand about a chanter: as long as you are
         blowing, it is <em>sounding</em>. You cannot tongue notes to separate them the way a flute or
-        trumpet player can, and you cannot stop a note without stopping the whole instrument. This one
-        fact shapes everything in piping — it is the reason grace notes exist, and you will meet them
-        later.
+        trumpet player can, and you cannot stop a note without stopping the whole instrument. In
+        particular, you cannot play the same note twice in a row — with nothing between them the two
+        just merge into one longer sound. This one fact shapes everything in piping — it is the reason
+        grace notes exist (a tiny flick of a different note is the only way to split a repeat), and you
+        will meet them later.
       </Callout>
       <h3>Waking the reed up</h3>
       <p>
@@ -244,9 +246,9 @@ export function NotationBasics() {
               'The chanter can only play Low G, Low A, B, C, D, E, F, High G, and High A — the same nine notes from the Play tab’s note explorer. Whatever is on the page, it is always one of those nine.',
           },
           {
-            term: 'No sharps or flats',
+            term: 'No key signature, no accidentals',
             detail:
-              'A written note always means its plain, natural letter. Pipe music is never written with a key signature and essentially never uses an accidental.',
+              'Pipe music is never written with a key signature and essentially never uses an accidental. (Two notes do sound a semitone sharp — the written “C” is really a C♯ and “F” is really an F♯ — but you never have to think about it: the fingering is fixed, so the right pitch comes out on its own.)',
           },
           {
             term: 'One range, forever',
