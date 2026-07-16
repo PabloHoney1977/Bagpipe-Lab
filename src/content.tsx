@@ -7,8 +7,8 @@ export function Welcome() {
   return (
     <div className="prose">
       <p className="lede">
-        Welcome. This course takes you from never having held a chanter to playing real tunes
-        on the Great Highland Bagpipe — one small, solid step at a time.
+        This app takes you from never having held a chanter to playing real tunes on the Great
+        Highland Bagpipe — one small, solid step at a time.
       </p>
       <p>
         Every piper in the world starts the same way: not on the pipes, but on the{' '}
@@ -24,20 +24,24 @@ export function Welcome() {
         ever pick up the pipes. The fingering you learn here is <em>exactly</em> the same on the
         pipes.
       </Callout>
-      <h3>The path ahead</h3>
-      <p>You will move through the course in order. Each stage builds on the one before it:</p>
+      <h3>How to use this app</h3>
+      <p>
+        The <strong>Guide</strong> you are reading is the map. It is not the practice itself — it is
+        a short path of stages that each tell you one thing and then send you to the tool where you
+        actually do it:
+      </p>
       <FactList
         items={[
-          { term: 'Fundamentals', detail: 'Hold the chanter, understand the reed, learn where your fingers go.' },
-          { term: 'The nine notes', detail: 'Meet each note and its fingering, one at a time.' },
-          { term: 'Reading the music', detail: 'Learn how those nine notes and their timing are written on the page.' },
-          { term: 'The scale', detail: 'Play the full run of notes, low to high and back, in time.' },
-          { term: 'Steady rhythm', detail: 'Play simple tunes graded on your timing and finger accuracy.' },
-          { term: 'Embellishments', detail: 'Add the grace-note movements that make piping sound like piping.' },
-          { term: 'Onto the pipes', detail: 'Carry everything you have learned across to the Highland pipes.' },
+          { term: 'Guide', detail: 'This tab. Your step-by-step path — read a stage, then follow its buttons into the tools.' },
+          { term: 'Scale', detail: 'Watch the full octave play, low to high and back, with the fingering leading your eye.' },
+          { term: 'Play', detail: 'Three ways to practise the same patterns: feel the pulse (timing, scored), read the music (staff notation), or explore each note freely.' },
+          { term: 'Grace notes', detail: 'The embellishments that make piping sound like piping — later, once your tunes are steady.' },
         ]}
       />
-      <p>Take your time. Steady beats fast, every single time. Let’s begin.</p>
+      <p>
+        Work the stages top to bottom, tick off each stage’s practice steps in the tools, and mark a
+        stage done when it feels solid. Take your time — steady beats fast, every single time.
+      </p>
     </div>
   )
 }
