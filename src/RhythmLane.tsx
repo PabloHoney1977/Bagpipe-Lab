@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { NOTES, playChanterNote, playClick, resumeAudio } from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
+import { buildTimedExercise } from './rhythmEngine'
 import type { Exercise } from './tunes'
 
 type Judgement = 'pending' | 'perfect' | 'good' | 'miss'
@@ -21,8 +22,6 @@ type Game = {
   lastTargetMs: number
   endMs: number
 }
-
-const NOTE_BY_NAME = new Map(NOTES.map((n) => [n.name, n]))
 
 const APPROACH_MS = 2000 // how long a note is visible falling before its beat
 const PERFECT_MS = 100
@@ -57,8 +56,6 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   const [best, setBest] = useState<Record<string, number>>(() => loadBest())
 
   const total = exercise.notes.length
-  const beatMs = 60000 / bpm
-  const leadInMs = exercise.beatsPerBar * beatMs
 
   const stop = useCallback(() => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
@@ -80,26 +77,22 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   }, [exercise.id])
 
   function buildGame(): Game {
-    let beat = exercise.beatsPerBar // count-in of one bar
-    const notes: GameNote[] = exercise.notes.map((en) => {
-      const n = NOTE_BY_NAME.get(en.note)
-      const targetMs = beat * beatMs
-      beat += en.beats
-      return {
-        name: en.note,
-        freq: n?.freq ?? 440,
-        covered: n?.covered ?? [],
-        targetMs,
-        status: 'pending',
-      }
-    })
-    const totalBeats = beat
-    const beatTimes = Array.from({ length: totalBeats + 1 }, (_, i) => ({
-      ms: i * beatMs,
-      accent: i % exercise.beatsPerBar === 0,
+    const timed = buildTimedExercise(exercise, bpm)
+    const notes: GameNote[] = timed.notes.map((tn) => ({
+      name: tn.name,
+      freq: tn.freq,
+      covered: tn.covered,
+      targetMs: tn.targetMs,
+      status: 'pending',
     }))
-    const lastTargetMs = notes.length ? notes[notes.length - 1].targetMs : leadInMs
-    return { startMs: 0, notes, beatTimes, nextBeat: 0, lastTargetMs, endMs: lastTargetMs + 1200 }
+    return {
+      startMs: 0,
+      notes,
+      beatTimes: timed.beatTimes,
+      nextBeat: 0,
+      lastTargetMs: timed.lastTargetMs,
+      endMs: timed.lastTargetMs + 1200,
+    }
   }
 
   function start() {

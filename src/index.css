@@ -356,86 +356,177 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.units {
+/* ---------------------------------------------------------------- */
+/* The path — phases + stage cards                                  */
+/* ---------------------------------------------------------------- */
+
+.path {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 30px;
 }
 
-.unit-head {
+.phase-title {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.unit-num {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--bg);
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.unit-title {
-  margin: 0;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 12px;
   font-size: 20px;
   font-weight: 600;
   color: var(--text);
 }
 
-.unit-summary {
-  margin: 2px 0 0;
-  font-size: 14px;
-  color: var(--text-dim);
-  max-width: 52ch;
+.phase-num {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
 }
 
-.lesson-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.stage {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: color-mix(in srgb, var(--accent) 2%, transparent);
 }
 
-.lesson-row {
+.stage.is-open {
+  border-left-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+}
+
+.stage.is-done {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-left-color: var(--accent);
+}
+
+.stage-head {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 13px 15px;
   background: transparent;
-  color: var(--text);
+  border: none;
   cursor: pointer;
   text-align: left;
   font: inherit;
-  transition: border-color 0.15s ease, transform 0.05s ease;
+  color: var(--text);
 }
 
-.lesson-row:hover {
-  border-color: var(--accent);
-}
-
-.lesson-row:active {
-  transform: scale(0.995);
-}
-
-.check {
+.stage-check {
   flex: none;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-check.is-done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.stage-head-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stage-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stage-time {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.stage-chevron {
+  color: var(--accent);
+  font-size: 14px;
+  flex: none;
+}
+
+.stage-body {
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.stage-concept {
+  margin-top: 12px;
+}
+
+.stage-concept p {
+  margin: 0;
+}
+
+.stage-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 4px;
+}
+
+.cta-button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.cta-button:active {
+  transform: scale(0.985);
+}
+
+.stage-checklist {
+  list-style: none;
+  margin: 16px 0 4px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tick-row {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 6px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+}
+
+.tick-box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 5px;
   border: 1.5px solid var(--border);
   display: flex;
   align-items: center;
@@ -444,138 +535,77 @@ body {
   color: var(--bg);
 }
 
-.check.is-done {
+.tick-row.is-checked .tick-box {
   background: var(--accent);
   border-color: var(--accent);
 }
 
-.lesson-row-text {
+.tick-text {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
-.lesson-row-title {
-  font-size: 16px;
+.tick-row.is-checked .tick-text {
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+
+.stage-mastery {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  font-size: 14px;
   font-weight: 500;
+  color: var(--text);
 }
 
-.lesson-row-sub {
-  font-size: 13px;
-  color: var(--text-dim);
+.stage-why {
+  margin-top: 14px;
 }
 
-.lesson-row-arrow {
-  color: var(--text-dim);
-  font-size: 20px;
-}
-
-.contents-foot {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-dim);
-}
-
-/* ---------------------------------------------------------------- */
-/* Lesson view                                                      */
-/* ---------------------------------------------------------------- */
-
-.lesson-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.link-button {
+.why-toggle {
   font: inherit;
   font-size: 14px;
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--text-dim);
   cursor: pointer;
-  padding: 0;
-}
-
-.lesson-unit {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.lesson-head {
-  margin-bottom: 24px;
-}
-
-.lesson-title {
-  margin: 0;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  text-wrap: balance;
-}
-
-.lesson-sub {
-  margin: 6px 0 0;
-  color: var(--text-dim);
-  font-size: 16px;
-}
-
-.lesson-nav {
+  padding: 4px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+  gap: 6px;
 }
 
-.nav-button {
-  font: inherit;
-  font-size: 14px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
+.why-toggle span {
+  color: var(--accent);
 }
 
-.nav-button:hover:not(:disabled) {
-  border-color: var(--accent);
-}
-
-.nav-button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.nav-primary {
-  margin-left: auto;
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg);
-  font-weight: 600;
+.why-body {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
 }
 
 .done-button {
   font: inherit;
-  font-size: 13px;
-  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 16px;
+  padding: 11px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-dim);
   cursor: pointer;
+  min-height: 44px;
 }
 
 .done-button.is-done {
   border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
   color: var(--accent);
 }
 
@@ -891,6 +921,131 @@ body {
 }
 
 /* ---------------------------------------------------------------- */
+/* Staff notation diagram                                           */
+/* ---------------------------------------------------------------- */
+
+.staff-line,
+.staff-ledger {
+  stroke: var(--text-dim);
+  stroke-width: 1.5;
+}
+
+.staff-stem {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+.staff-note {
+  fill: var(--text);
+}
+
+.staff-note-label {
+  fill: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--sans);
+}
+
+/* ---- Staff play-along (Read the music) ---- */
+
+.staffplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.staffplay-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+  padding: 8px 0;
+  scrollbar-width: thin;
+}
+
+.staffplay-svg {
+  display: block;
+}
+
+.staff-barline {
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+
+.staff-playhead {
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.75;
+}
+
+.staff-note-halo {
+  fill: var(--accent);
+  opacity: 0.16;
+}
+
+.staff-note.is-current,
+.staff-stem.is-current {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.staff-stem.is-current {
+  stroke-width: 2;
+}
+
+.staff-note-label.is-current {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.staffplay-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.staffplay-current {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.staffplay-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tempo-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tempo-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tempo-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------- */
 /* Play tab — segmented control, exercise picker, rhythm game       */
 /* ---------------------------------------------------------------- */
 
@@ -900,6 +1055,18 @@ body {
   border: 1px solid var(--border);
   border-radius: 999px;
   margin-bottom: 20px;
+}
+
+/* Three options need to fit phone width, so let it stretch full-width. */
+.segmented-3 {
+  display: flex;
+  width: 100%;
+}
+
+.segmented-3 .seg {
+  flex: 1;
+  padding: 8px 6px;
+  text-align: center;
 }
 
 .seg {

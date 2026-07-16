@@ -1,34 +1,60 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { GUIDE_UNITS, GUIDE_FLAT, findGuideLesson } from './curriculum'
+import { STAGES, PHASES, stagesInPhase } from './curriculum'
+import type { Stage } from './curriculum'
 import { MeetTheChanter } from './MeetTheChanter'
 import { TheScale } from './TheScale'
 import { RhythmLane } from './RhythmLane'
+import { StaffPlayer } from './StaffPlayer'
 import { EXERCISES } from './tunes'
 import { ComingSoon } from './ui'
+import type { Tab, PlayMode, Preset } from './nav'
 
-type Tab = 'guide' | 'scale' | 'play' | 'embellishments'
+const STORAGE_KEY = 'bagpipe-lab-progress' // stage ids marked done
+const CHECK_KEY = 'bagpipe-lab-checklist' // per-item checklist ticks
 
-const STORAGE_KEY = 'bagpipe-lab-progress'
-
-function loadProgress(): string[] {
+function loadSet(key: string): Set<string> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as string[]) : []
+    const raw = localStorage.getItem(key)
+    return new Set(raw ? (JSON.parse(raw) as string[]) : [])
   } catch {
-    return []
+    return new Set()
+  }
+}
+
+function saveSet(key: string, set: Set<string>) {
+  try {
+    localStorage.setItem(key, JSON.stringify([...set]))
+  } catch {
+    /* ignore storage failures */
   }
 }
 
 function App() {
   const [tab, setTab] = useState<Tab>('guide')
+  const [playMode, setPlayMode] = useState<PlayMode>('feel')
+  const [playExerciseId, setPlayExerciseId] = useState(EXERCISES[0].id)
+
+  const openPreset = useCallback((p: Preset) => {
+    if (p.playMode) setPlayMode(p.playMode)
+    if (p.exerciseId) setPlayExerciseId(p.exerciseId)
+    setTab(p.tab)
+    document.querySelector('.app-main')?.scrollTo({ top: 0 })
+  }, [])
 
   return (
     <div className="app">
       <main className="app-main">
-        {tab === 'guide' && <GuideTab />}
+        {tab === 'guide' && <GuideTab openPreset={openPreset} />}
         {tab === 'scale' && <ScaleTab />}
-        {tab === 'play' && <PlayTab />}
+        {tab === 'play' && (
+          <PlayTab
+            mode={playMode}
+            setMode={setPlayMode}
+            exerciseId={playExerciseId}
+            setExerciseId={setPlayExerciseId}
+          />
+        )}
         {tab === 'embellishments' && <EmbellishmentsTab />}
       </main>
 
@@ -72,145 +98,178 @@ function TabButton({
 /* Guide tab — the written course                                   */
 /* ---------------------------------------------------------------- */
 
-function GuideTab() {
-  const [currentId, setCurrentId] = useState<string | null>(null)
-  const [completed, setCompleted] = useState<Set<string>>(() => new Set(loadProgress()))
+function GuideTab({ openPreset }: { openPreset: (p: Preset) => void }) {
+  const [done, setDone] = useState<Set<string>>(() => loadSet(STORAGE_KEY))
+  const [ticks, setTicks] = useState<Set<string>>(() => loadSet(CHECK_KEY))
+  const [openId, setOpenId] = useState<string | null>(() => {
+    const d = loadSet(STORAGE_KEY)
+    return STAGES.find((s) => !d.has(s.id))?.id ?? null
+  })
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]))
-    } catch {
-      /* ignore storage failures */
-    }
-  }, [completed])
+  useEffect(() => saveSet(STORAGE_KEY, done), [done])
+  useEffect(() => saveSet(CHECK_KEY, ticks), [ticks])
 
-  useEffect(() => {
-    document.querySelector('.app-main')?.scrollTo({ top: 0 })
-  }, [currentId])
-
-  function markComplete(id: string) {
-    setCompleted((prev) => new Set(prev).add(id))
+  function toggleDone(id: string) {
+    setDone((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
-  const current = currentId ? findGuideLesson(currentId) : undefined
-  const total = GUIDE_FLAT.length
-  const done = GUIDE_FLAT.filter((f) => completed.has(f.lesson.id)).length
-
-  if (!current) {
-    const pct = total ? Math.round((done / total) * 100) : 0
-    return (
-      <div className="contents">
-        <header className="contents-head">
-          <p className="brand-eyebrow">Practice chanter → Highland pipes</p>
-          <h1 className="brand-title">Bagpipe Lab</h1>
-          <p className="brand-sub">A step-by-step guide from your very first note to playing real tunes.</p>
-          <div className="progress">
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${pct}%` }} />
-            </div>
-            <span className="progress-text">
-              {done} of {total} read
-            </span>
-          </div>
-        </header>
-
-        <div className="units">
-          {GUIDE_UNITS.map((unit, ui) => (
-            <section key={unit.id} className="unit">
-              <div className="unit-head">
-                <span className="unit-num">{ui + 1}</span>
-                <div>
-                  <h2 className="unit-title">{unit.title}</h2>
-                  <p className="unit-summary">{unit.summary}</p>
-                </div>
-              </div>
-              <ul className="lesson-list">
-                {unit.lessons.map((lesson) => (
-                  <li key={lesson.id}>
-                    <button type="button" className="lesson-row" onClick={() => setCurrentId(lesson.id)}>
-                      <span className={completed.has(lesson.id) ? 'check is-done' : 'check'} aria-hidden="true">
-                        {completed.has(lesson.id) ? '✓' : ''}
-                      </span>
-                      <span className="lesson-row-text">
-                        <span className="lesson-row-title">{lesson.title}</span>
-                        {lesson.subtitle ? <span className="lesson-row-sub">{lesson.subtitle}</span> : null}
-                      </span>
-                      <span className="lesson-row-arrow" aria-hidden="true">›</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-
-        <p className="contents-foot">
-          When your fingers know the way, head to the <strong>Scale</strong> and <strong>Play</strong> tabs to practise.
-        </p>
-      </div>
-    )
+  function toggleTick(key: string) {
+    setTicks((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
   }
 
-  const prev = current.index > 0 ? GUIDE_FLAT[current.index - 1] : undefined
-  const next = current.index < total - 1 ? GUIDE_FLAT[current.index + 1] : undefined
+  const total = STAGES.length
+  const doneCount = STAGES.filter((s) => done.has(s.id)).length
+  const pct = total ? Math.round((doneCount / total) * 100) : 0
 
   return (
-    <article className="lesson-view">
-      <div className="lesson-top">
-        <button type="button" className="link-button" onClick={() => setCurrentId(null)}>
-          ‹ All lessons
-        </button>
-        <span className="lesson-unit">{current.unit.title}</span>
-      </div>
-
-      <header className="lesson-head">
-        <h1 className="lesson-title">{current.lesson.title}</h1>
-        {current.lesson.subtitle ? <p className="lesson-sub">{current.lesson.subtitle}</p> : null}
+    <div className="contents">
+      <header className="contents-head">
+        <p className="brand-eyebrow">Practice chanter → Highland pipes</p>
+        <h1 className="brand-title">Bagpipe Lab</h1>
+        <p className="brand-sub">Your path from a first note to real tunes — read a stage, then practise it in the tools.</p>
+        <div className="progress">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${pct}%` }} />
+          </div>
+          <span className="progress-text">
+            {doneCount} of {total} done
+          </span>
+        </div>
       </header>
 
-      <div className="lesson-content">{current.lesson.render()}</div>
+      <div className="path">
+        {PHASES.map((phase, pi) => (
+          <section key={phase} className="phase">
+            <h2 className="phase-title">
+              <span className="phase-num">Phase {pi + 1}</span>
+              {phase}
+            </h2>
+            {stagesInPhase(phase).map((stage) => {
+              const n = STAGES.indexOf(stage) + 1
+              return (
+                <StageCard
+                  key={stage.id}
+                  n={n}
+                  stage={stage}
+                  isDone={done.has(stage.id)}
+                  isOpen={openId === stage.id}
+                  onToggleOpen={() => setOpenId((cur) => (cur === stage.id ? null : stage.id))}
+                  onToggleDone={() => toggleDone(stage.id)}
+                  ticks={ticks}
+                  onToggleTick={toggleTick}
+                  openPreset={openPreset}
+                />
+              )
+            })}
+          </section>
+        ))}
+      </div>
+    </div>
+  )
+}
 
-      <nav className="lesson-nav">
-        <button
-          type="button"
-          className="nav-button"
-          disabled={!prev}
-          onClick={() => prev && setCurrentId(prev.lesson.id)}
-        >
-          ‹ Previous
-        </button>
-        <button
-          type="button"
-          className={completed.has(current.lesson.id) ? 'done-button is-done' : 'done-button'}
-          onClick={() => markComplete(current.lesson.id)}
-        >
-          {completed.has(current.lesson.id) ? '✓ Read' : 'Mark as read'}
-        </button>
-        {next ? (
-          <button
-            type="button"
-            className="nav-button nav-primary"
-            onClick={() => {
-              markComplete(current.lesson.id)
-              setCurrentId(next.lesson.id)
-            }}
-          >
-            Next ›
+function StageCard({
+  n,
+  stage,
+  isDone,
+  isOpen,
+  onToggleOpen,
+  onToggleDone,
+  ticks,
+  onToggleTick,
+  openPreset,
+}: {
+  n: number
+  stage: Stage
+  isDone: boolean
+  isOpen: boolean
+  onToggleOpen: () => void
+  onToggleDone: () => void
+  ticks: Set<string>
+  onToggleTick: (key: string) => void
+  openPreset: (p: Preset) => void
+}) {
+  const [whyOpen, setWhyOpen] = useState(false)
+
+  return (
+    <div className={`stage${isDone ? ' is-done' : ''}${isOpen ? ' is-open' : ''}`} id={`stage-${stage.id}`}>
+      <button type="button" className="stage-head" onClick={onToggleOpen} aria-expanded={isOpen}>
+        <span className={isDone ? 'stage-check is-done' : 'stage-check'} aria-hidden="true">
+          {isDone ? '✓' : n}
+        </span>
+        <span className="stage-head-text">
+          <span className="stage-title">{stage.title}</span>
+          {stage.time ? <span className="stage-time">{stage.time}</span> : null}
+        </span>
+        <span className="stage-chevron" aria-hidden="true">
+          {isOpen ? '▾' : '▸'}
+        </span>
+      </button>
+
+      {isOpen ? (
+        <div className="stage-body">
+          <div className="stage-concept prose">{stage.concept}</div>
+
+          {stage.ctas?.length ? (
+            <div className="stage-ctas">
+              {stage.ctas.map((cta) => (
+                <button key={cta.label} type="button" className="cta-button" onClick={() => openPreset(cta.preset)}>
+                  {cta.label} ›
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          {stage.checklist?.length ? (
+            <ul className="stage-checklist">
+              {stage.checklist.map((item, i) => {
+                const key = `${stage.id}:${i}`
+                const checked = ticks.has(key)
+                return (
+                  <li key={key}>
+                    <button
+                      type="button"
+                      className={checked ? 'tick-row is-checked' : 'tick-row'}
+                      onClick={() => onToggleTick(key)}
+                    >
+                      <span className="tick-box" aria-hidden="true">
+                        {checked ? '✓' : ''}
+                      </span>
+                      <span className="tick-text">{item}</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          ) : null}
+
+          {stage.mastery ? <p className="stage-mastery">{stage.mastery}</p> : null}
+
+          {stage.why ? (
+            <div className="stage-why">
+              <button type="button" className="why-toggle" onClick={() => setWhyOpen((v) => !v)}>
+                <span aria-hidden="true">{whyOpen ? '▾' : '▸'}</span> Why it works
+              </button>
+              {whyOpen ? <div className="why-body">{stage.why()}</div> : null}
+            </div>
+          ) : null}
+
+          <button type="button" className={isDone ? 'done-button is-done' : 'done-button'} onClick={onToggleDone}>
+            {isDone ? '✓ Done' : 'Mark this stage done'}
           </button>
-        ) : (
-          <button
-            type="button"
-            className="nav-button nav-primary"
-            onClick={() => {
-              markComplete(current.lesson.id)
-              setCurrentId(null)
-            }}
-          >
-            Finish ✓
-          </button>
-        )}
-      </nav>
-    </article>
+        </div>
+      ) : null}
+    </div>
   )
 }
 
@@ -236,25 +295,38 @@ function ScaleTab() {
   )
 }
 
-function PlayTab() {
-  const [mode, setMode] = useState<'along' | 'notes'>('along')
-  const [exerciseId, setExerciseId] = useState(EXERCISES[0].id)
+function PlayTab({
+  mode,
+  setMode,
+  exerciseId,
+  setExerciseId,
+}: {
+  mode: PlayMode
+  setMode: (m: PlayMode) => void
+  exerciseId: string
+  setExerciseId: (id: string) => void
+}) {
   const exercise = EXERCISES.find((e) => e.id === exerciseId) ?? EXERCISES[0]
 
   return (
     <div className="tool">
-      <ToolHeader title="Play" subtitle="Play along in time, or explore each note freely." />
+      <ToolHeader title="Play" subtitle="Feel the pulse, read the music, or explore each note freely." />
 
-      <div className="segmented">
-        <button type="button" className={mode === 'along' ? 'seg is-active' : 'seg'} onClick={() => setMode('along')}>
-          Play along
+      <div className="segmented segmented-3">
+        <button type="button" className={mode === 'feel' ? 'seg is-active' : 'seg'} onClick={() => setMode('feel')}>
+          Feel the pulse
+        </button>
+        <button type="button" className={mode === 'read' ? 'seg is-active' : 'seg'} onClick={() => setMode('read')}>
+          Read the music
         </button>
         <button type="button" className={mode === 'notes' ? 'seg is-active' : 'seg'} onClick={() => setMode('notes')}>
           Explore notes
         </button>
       </div>
 
-      {mode === 'along' ? (
+      {mode === 'notes' ? (
+        <MeetTheChanter />
+      ) : (
         <>
           <div className="exercise-picker">
             {EXERCISES.map((e) => (
@@ -268,19 +340,27 @@ function PlayTab() {
               </button>
             ))}
           </div>
-          <p className="exercise-desc">
-            {exercise.description} <span className="exercise-bpm">{exercise.bpm} bpm</span>
-          </p>
-          <RhythmLane key={exercise.id} exercise={exercise} />
+          <p className="exercise-desc">{exercise.description}</p>
+          {mode === 'feel' ? (
+            <RhythmLane key={exercise.id} exercise={exercise} />
+          ) : (
+            <StaffPlayer key={exercise.id} exercise={exercise} />
+          )}
           <div className="tool-note">
-            <p>
-              These are practice patterns built from the scale. Real public-domain tunes arrive once the repertoire is
-              chosen.
-            </p>
+            {mode === 'read' ? (
+              <p>
+                <strong>Read the music</strong> shows the exercise as real bagpipe staff notation and plays it for you —
+                follow the moving line on your own chanter. Switch to <strong>Feel the pulse</strong> to be scored on your
+                timing.
+              </p>
+            ) : (
+              <p>
+                <strong>Feel the pulse</strong> scores your timing as notes reach the line. Switch to{' '}
+                <strong>Read the music</strong> to see the same exercise written on the staff and learn to read it.
+              </p>
+            )}
           </div>
         </>
-      ) : (
-        <MeetTheChanter />
       )}
     </div>
   )
