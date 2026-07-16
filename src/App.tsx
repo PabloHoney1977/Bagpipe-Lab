@@ -6,6 +6,7 @@ import { MeetTheChanter } from './MeetTheChanter'
 import { TheScale } from './TheScale'
 import { RhythmLane } from './RhythmLane'
 import { StaffPlayer } from './StaffPlayer'
+import { TuningDial } from './TuningDial'
 import { EXERCISES } from './tunes'
 import { ComingSoon } from './ui'
 import type { Tab, PlayMode, Preset } from './nav'
@@ -44,6 +45,7 @@ function App() {
 
   return (
     <div className="app">
+      <TuningDial />
       <main className="app-main">
         {tab === 'guide' && <GuideTab openPreset={openPreset} />}
         {tab === 'scale' && <ScaleTab />}

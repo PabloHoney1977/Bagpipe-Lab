@@ -1325,3 +1325,143 @@ body {
 .rhythm-meta { grid-area: meta; }
 .run-result { grid-area: result; }
 .rhythm .hint { grid-area: hint; }
+
+/* ------------------------------------------------------------------ */
+/* Chanter tuning dial                                                 */
+/* ------------------------------------------------------------------ */
+.tuning {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top, 0));
+  right: calc(10px + env(safe-area-inset-right, 0));
+  z-index: 30;
+}
+
+.tuning-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--text-dim);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.tuning-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.tuning-toggle-hz {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.tuning-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(300px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.tuning-panel-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tuning-panel-sub {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.tuning-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.tuning-readout-hz {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.tuning-readout-unit {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.tuning-slider {
+  width: 100%;
+  margin: 6px 0 2px;
+  accent-color: var(--accent);
+}
+
+.tuning-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.tuning-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tuning-btn {
+  flex: 1;
+  padding: 8px 6px;
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tuning-btn-ghost {
+  background: none;
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+
+.tuning-btn-ghost:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.tuning-btn-ghost:not(:disabled):hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.tuning-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
