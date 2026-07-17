@@ -69,6 +69,51 @@ export function playChanterNote(freq: number) {
   osc.stop(now + 0.9)
 }
 
+/** One reed tone scheduled on the shared context at an absolute time. */
+function scheduleReedTone(
+  audioCtx: AudioContext,
+  freq: number,
+  start: number,
+  dur: number,
+  peak: number,
+) {
+  const osc = audioCtx.createOscillator()
+  osc.type = 'sawtooth'
+  osc.frequency.value = freq
+
+  const filter = audioCtx.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.frequency.value = freq * 3.5
+  filter.Q.value = 0.7
+
+  const gain = audioCtx.createGain()
+  const attack = Math.min(0.012, dur * 0.3)
+  gain.gain.setValueAtTime(0, start)
+  gain.gain.linearRampToValueAtTime(peak, start + attack)
+  gain.gain.linearRampToValueAtTime(peak * 0.72, start + dur * 0.5)
+  gain.gain.linearRampToValueAtTime(0, start + dur)
+
+  osc.connect(filter)
+  filter.connect(gain)
+  gain.connect(audioCtx.destination)
+
+  osc.start(start)
+  osc.stop(start + dur + 0.02)
+}
+
+const GRACE_S = 0.045 // grace-note length / spacing, in seconds
+
+/**
+ * Play a melody note preceded by a quick flam of grace notes (an embellishment).
+ * The grace notes lead in and the principal note lands right after them.
+ */
+export function playOrnamentedNote(graceFreqs: number[], principalFreq: number) {
+  const audioCtx = getContext()
+  const t0 = audioCtx.currentTime
+  graceFreqs.forEach((f, i) => scheduleReedTone(audioCtx, f, t0 + i * GRACE_S, GRACE_S, 0.2))
+  scheduleReedTone(audioCtx, principalFreq, t0 + graceFreqs.length * GRACE_S, 0.85, 0.28)
+}
+
 /** Short metronome click. `accent` marks the first beat of a bar. */
 export function playClick(accent = false) {
   const audioCtx = getContext()

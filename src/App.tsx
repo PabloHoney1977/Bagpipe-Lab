@@ -7,8 +7,13 @@ import { TheScale } from './TheScale'
 import { RhythmLane } from './RhythmLane'
 import { StaffPlayer } from './StaffPlayer'
 import { EXERCISES } from './tunes'
-import { ComingSoon } from './ui'
+import type { Exercise } from './tunes'
+import { TRIADS } from './triads'
+import { ORNAMENT_DRILLS } from './ornaments'
 import type { Tab, PlayMode, Preset } from './nav'
+
+// All playable exercises across every group, for id lookup and CTA routing.
+const ALL_EXERCISES = [...EXERCISES, ...TRIADS, ...ORNAMENT_DRILLS]
 
 const STORAGE_KEY = 'bagpipe-lab-progress' // stage ids marked done
 const CHECK_KEY = 'bagpipe-lab-checklist' // per-item checklist ticks
@@ -33,7 +38,7 @@ function saveSet(key: string, set: Set<string>) {
 function App() {
   const [tab, setTab] = useState<Tab>('guide')
   const [playMode, setPlayMode] = useState<PlayMode>('feel')
-  const [playExerciseId, setPlayExerciseId] = useState(EXERCISES[0].id)
+  const [playExerciseId, setPlayExerciseId] = useState(ALL_EXERCISES[0].id)
 
   const openPreset = useCallback((p: Preset) => {
     if (p.playMode) setPlayMode(p.playMode)
@@ -55,7 +60,7 @@ function App() {
             setExerciseId={setPlayExerciseId}
           />
         )}
-        {tab === 'embellishments' && <EmbellishmentsTab />}
+        {tab === 'embellishments' && <EmbellishmentsTab openPreset={openPreset} />}
       </main>
 
       <nav className="tab-bar" aria-label="Sections">
@@ -306,7 +311,7 @@ function PlayTab({
   exerciseId: string
   setExerciseId: (id: string) => void
 }) {
-  const exercise = EXERCISES.find((e) => e.id === exerciseId) ?? EXERCISES[0]
+  const exercise = ALL_EXERCISES.find((e) => e.id === exerciseId) ?? ALL_EXERCISES[0]
 
   return (
     <div className="tool">
@@ -328,18 +333,21 @@ function PlayTab({
         <MeetTheChanter />
       ) : (
         <>
-          <div className="exercise-picker">
-            {EXERCISES.map((e) => (
-              <button
-                key={e.id}
-                type="button"
-                className={e.id === exerciseId ? 'exercise-chip is-active' : 'exercise-chip'}
-                onClick={() => setExerciseId(e.id)}
-              >
-                {e.name}
-              </button>
-            ))}
-          </div>
+          <ExerciseGroup label="Tunes & patterns" items={EXERCISES} activeId={exerciseId} onPick={setExerciseId} />
+          <ExerciseGroup
+            label="Finger gym"
+            hint="Short drills for one finger move at a time."
+            items={TRIADS}
+            activeId={exerciseId}
+            onPick={setExerciseId}
+          />
+          <ExerciseGroup
+            label="Grace notes"
+            hint="Ornament drills — a gracenote flams in before the note."
+            items={ORNAMENT_DRILLS}
+            activeId={exerciseId}
+            onPick={setExerciseId}
+          />
           <p className="exercise-desc">{exercise.description}</p>
           {mode === 'feel' ? (
             <RhythmLane key={exercise.id} exercise={exercise} />
@@ -366,17 +374,79 @@ function PlayTab({
   )
 }
 
-function EmbellishmentsTab() {
+function ExerciseGroup({
+  label,
+  hint,
+  items,
+  activeId,
+  onPick,
+}: {
+  label: string
+  hint?: string
+  items: Exercise[]
+  activeId: string
+  onPick: (id: string) => void
+}) {
+  return (
+    <div className="exercise-group">
+      <p className="exercise-group-label">
+        {label}
+        {hint ? <span className="exercise-group-hint">{hint}</span> : null}
+      </p>
+      <div className="exercise-picker">
+        {items.map((e) => (
+          <button
+            key={e.id}
+            type="button"
+            className={e.id === activeId ? 'exercise-chip is-active' : 'exercise-chip'}
+            onClick={() => onPick(e.id)}
+          >
+            {e.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function EmbellishmentsTab({ openPreset }: { openPreset: (p: Preset) => void }) {
   return (
     <div className="tool">
       <ToolHeader title="Grace notes" subtitle="The movements that make piping sound like piping." />
-      <ComingSoon>
+
+      <div className="prose">
         <p>
-          Because a chanter can’t stop between two of the same note, pipers use tiny grace-note movements to separate
-          them. This is where you’ll learn the doubling — your first embellishment — then build up through strikes,
-          grips, throws, and more, each practised in the tune that calls for it.
+          A chanter never stops sounding, so it can’t separate two of the same note with silence. Instead, pipers flick
+          in a tiny, near-instant <strong>grace note</strong> to break them apart and to articulate a note crisply.
         </p>
-      </ComingSoon>
+        <p>
+          Your first one is the <strong>high-G gracenote</strong>: a quick lift of the top-hand index finger that sounds
+          High G for an instant before dropping back to the melody note. Drill it below — the gracenote flams in just
+          before the beat, and you’re scored on the main note’s timing.
+        </p>
+      </div>
+
+      <div className="stage-ctas">
+        <button
+          type="button"
+          className="cta-button"
+          onClick={() => openPreset({ tab: 'play', playMode: 'feel', exerciseId: 'orn-hg-b' })}
+        >
+          Drill the high-G gracenote ›
+        </button>
+        <button
+          type="button"
+          className="cta-button"
+          onClick={() => openPreset({ tab: 'play', playMode: 'read', exerciseId: 'orn-hg-b' })}
+        >
+          Read it on the staff ›
+        </button>
+      </div>
+
+      <p className="tool-note">
+        More ornaments — the doubling, strikes, throws, grips, the birl — build from here, each introduced on a tune that
+        needs it. The doubling drill is still being refined, so treat its exact fingering as provisional for now.
+      </p>
     </div>
   )
 }

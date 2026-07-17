@@ -84,6 +84,29 @@ against real learners.
 
 Free vs paid boundary (from CLAUDE.md): stages 0–3 free, 4–6 one-time unlock.
 
+### 3a. The Finger Gym (transition drills)
+
+Between the scale (stage 2) and tunes (stage 3) sits a layer of **note-to-note
+transition drills** — one finger move at a time, looped slowly until crisp. This
+is the transferable core of Bogart's paper tutor (see
+`reference/triad-method.md`): clean piping is mostly clean transitions, so
+isolate each move before stringing them into tunes. [piping][principle]
+
+Two things carry over from that method and are worth keeping:
+- **The TAP/SNAP movement vocabulary** — to a lower note you *tap* the finger(s)
+  down; to a higher note you *snap* them up, well clear of the holes. We surface
+  this as a per-note cue during the drill, generated from the fingering diff.
+- **Ordering: simplest move first** — bottom-hand moves, then top-hand, then the
+  two-handed crossings and leaps.
+
+Built as `src/triads.ts` (`TRIADS`), drilled through the existing rhythm lane and
+tempo ladder. This realises principles #7 (separate streams) and #9/#10 (isolated
+motor loops, targeted drills) for plain fingering, not just ornaments.
+
+We deliberately **do not** copy the tutor's ordering, which front-loads esoteric
+embellishments before tunes — that contradicts §4 (and the tutor's own stated
+"simplest first" principle). We take the drill *method*, not the sequence.
+
 ---
 
 ## 4. Embellishment curriculum
@@ -126,6 +149,12 @@ vehicle for the first ornaments, taught in this order **on the tune**:
 Later tunes introduce the heavier movements (grip, taorluath, birl, etc.) the
 same way — layered onto a known melody. Exact ordering for those is still
 **[needs owner]**.
+
+**"Be ready for:" tune prerequisites [proposal].** Borrowed from the paper
+tutor: each tune stage should open with a short checklist of exactly which
+skills/embellishments it needs, each linking to the drill (Finger Gym item or
+ornament) that builds it. Turns a tune into a visible set of prerequisites rather
+than a wall.
 
 ---
 

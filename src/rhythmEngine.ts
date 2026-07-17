@@ -1,4 +1,5 @@
 import { NOTES } from './chanter'
+import { toGraceFreqs } from './ornaments'
 import type { Exercise } from './tunes'
 
 const NOTE_BY_NAME = new Map(NOTES.map((n) => [n.name, n]))
@@ -14,6 +15,12 @@ export type TimedNote = {
   beats: number
   /** cumulative beat position where this note starts (after the count-in) */
   beatPos: number
+  /** optional coaching cue for the move onto this note */
+  cue?: string
+  /** grace-note names sounded just before this note (empty if none) */
+  graces: string[]
+  /** grace-note frequencies, resolved from `graces` for audio */
+  graceFreqs: number[]
 }
 
 export type Beat = { ms: number; accent: boolean }
@@ -52,6 +59,9 @@ export function buildTimedExercise(exercise: Exercise, bpm: number): TimedExerci
       targetMs,
       beats: en.beats,
       beatPos,
+      cue: en.cue,
+      graces: en.graces ?? [],
+      graceFreqs: en.graces ? toGraceFreqs(en.graces) : [],
     }
   })
 

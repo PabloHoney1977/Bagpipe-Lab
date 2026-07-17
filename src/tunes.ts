@@ -7,6 +7,10 @@ export type ExerciseNote = {
   note: string
   /** duration in beats */
   beats: number
+  /** optional coaching cue for the move onto this note (used by Finger Gym drills) */
+  cue?: string
+  /** optional grace notes (names) sounded as a flam just before this note */
+  graces?: string[]
 }
 
 export type Exercise = {
@@ -25,8 +29,8 @@ export type Exercise = {
 // DRAFT pending the owner's correction of the exact notes and rhythm.
 const AMAZING_GRACE: Exercise = {
   id: 'amazing-grace',
-  name: 'Amazing Grace (draft)',
-  description: 'The first real tune — melody only for now. A draft setting to be corrected; grace notes come later.',
+  name: 'Amazing Grace',
+  description: 'Your first real tune — the plain melody, no ornaments yet. Learn it steady; the grace notes come later.',
   bpm: 50,
   beatsPerBar: 3,
   notes: [

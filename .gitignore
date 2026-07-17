@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local manual photo archive (copyrighted scans — never commit)
+/Photos-1-001.zip

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NOTES, playChanterNote, playClick, resumeAudio } from './chanter'
+import { NOTES, playChanterNote, playOrnamentedNote, playClick, resumeAudio } from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
 import type { TimedExercise } from './rhythmEngine'
@@ -120,7 +120,9 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
 
     // sound notes as their beat arrives, and light the current one
     while (f.nextNote < t.notes.length && t.notes[f.nextNote].targetMs <= elapsed) {
-      playChanterNote(t.notes[f.nextNote].freq)
+      const tn = t.notes[f.nextNote]
+      if (tn.graceFreqs.length) playOrnamentedNote(tn.graceFreqs, tn.freq)
+      else playChanterNote(tn.freq)
       setCurrentIdx(f.nextNote)
       f.nextNote++
     }
@@ -209,11 +211,24 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
             const stemX = stemUp ? cx + 8.5 : cx - 8.5
             const stemY2 = stemUp ? cy - STEM_LEN : cy + STEM_LEN
             const isCurrent = i === currentIdx
+            const graceX0 = cx - 14 - (n.graces.length - 1) * 7
             return (
               <g key={i}>
                 {ledgerStepsFor(step).map((s) => (
                   <line key={s} x1={cx - 13} y1={stepToY(s)} x2={cx + 13} y2={stepToY(s)} className="staff-ledger" />
                 ))}
+                {/* grace notes: small noteheads with tiny stems, left of the principal */}
+                {n.graces.map((g, gi) => {
+                  const gStep = NOTE_STEPS[g] ?? MIDDLE_STEP
+                  const gx = graceX0 + gi * 7
+                  const gy = stepToY(gStep)
+                  return (
+                    <g key={`g-${gi}`}>
+                      <line x1={gx + 3} y1={gy} x2={gx + 3} y2={gy - 16} className="staff-grace-stem" />
+                      <ellipse cx={gx} cy={gy} rx="3.4" ry="2.7" className="staff-grace" />
+                    </g>
+                  )
+                })}
                 {isCurrent ? <circle cx={cx} cy={cy} r="14" className="staff-note-halo" /> : null}
                 <line x1={stemX} y1={cy} x2={stemX} y2={stemY2} className={isCurrent ? 'staff-stem is-current' : 'staff-stem'} />
                 <ellipse cx={cx} cy={cy} rx="8.5" ry="6.5" className={isCurrent ? 'staff-note is-current' : 'staff-note'} />

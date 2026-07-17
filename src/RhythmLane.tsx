@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NOTES, playChanterNote, playClick, resumeAudio } from './chanter'
+import { NOTES, playChanterNote, playOrnamentedNote, playClick, resumeAudio } from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
 import type { Exercise } from './tunes'
@@ -12,6 +12,9 @@ type GameNote = {
   covered: boolean[]
   targetMs: number
   status: Judgement
+  cue?: string
+  graces: string[]
+  graceFreqs: number[]
 }
 
 type Game = {
@@ -84,6 +87,9 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       covered: tn.covered,
       targetMs: tn.targetMs,
       status: 'pending',
+      cue: tn.cue,
+      graces: tn.graces,
+      graceFreqs: tn.graceFreqs,
     }))
     return {
       startMs: 0,
@@ -138,7 +144,10 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
     }
     if (!best || bestDelta > GOOD_MS + 60) return // stray tap, ignore
     best.status = bestDelta <= PERFECT_MS ? 'perfect' : bestDelta <= GOOD_MS ? 'good' : 'miss'
-    if (best.status !== 'miss') playChanterNote(best.freq)
+    if (best.status !== 'miss') {
+      if (best.graceFreqs.length) playOrnamentedNote(best.graceFreqs, best.freq)
+      else playChanterNote(best.freq)
+    }
     recount(g)
     setCurrent(nextPending(g))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -284,6 +293,16 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(n.name, cx, y)
+
+      // grace notes: small satellite dots up and to the left of the principal
+      if (n.graces.length) {
+        for (let gi = 0; gi < n.graces.length; gi++) {
+          ctx.beginPath()
+          ctx.arc(cx - 30 - gi * 13, y - 20, 5, 0, Math.PI * 2)
+          ctx.fillStyle = accent
+          ctx.fill()
+        }
+      }
     }
   }
 
@@ -336,6 +355,10 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       <div className="rhythm-side">
         <ChanterDiagram covered={current?.covered ?? NOTES[0].covered} />
         <p className="rhythm-current">{current ? current.name : status === 'done' ? 'Done' : '—'}</p>
+        {current?.graces.length ? (
+          <p className="rhythm-grace">grace: {current.graces.join(' · ')}</p>
+        ) : null}
+        {current?.cue ? <p className="rhythm-cue">{current.cue}</p> : null}
       </div>
 
       <div className="rhythm-controls">

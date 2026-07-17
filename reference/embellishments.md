@@ -49,6 +49,39 @@ learners to feel. Three categories:
 - D Throw (Light)
 - D Throw (Heavy)
 
+## Shipped ornaments — fingering detail
+
+What the app actually implements so far (`src/ornaments.ts`), and its status.
+
+### High-G gracenote — SHIPPED, considered solid
+- **What:** a single grace note sounding **High G**, flicked in before a melody
+  note that is lower than High G.
+- **Fingering:** from the melody note, briefly lift the **top-hand index (L1)**
+  to open the High-G hole, then drop straight back. A quick flick, not a note
+  with real length.
+- **Use:** articulates a note, and separates two of the same note (a chanter
+  can't stop between them). Valid on Low A, B, C, D, E, F (and Low G).
+- In the app: `graces: ['High G']` on an ExerciseNote; drilled per note in the
+  Grace notes group.
+
+### Doublings — DRAFT, needs owner verification
+The app ships **one flagged draft** (doubling of B, modelled as high-G gracenote
+→ B → D gracenote → B) purely to exercise the multi-grace rendering. The full,
+correct doublings table is **[needs owner]** — please confirm, for each note, the
+exact grace-note construction:
+
+| Note | Doubling (grace cluster) — to confirm |
+|------|----------------------------------------|
+| Low A | ? |
+| B | high-G gracenote, B, D gracenote, B *(draft assumption)* |
+| C | ? |
+| D | ? (E gracenote involved?) |
+| E | ? (half-doubling?) |
+| F | ? (half-doubling?) |
+| High G / High A | ? |
+
+Until confirmed, no doubling is presented as authoritative or scored as correct.
+
 ## Design implications (for later)
 
 - **Teach the beat-relationship explicitly**, not just the finger pattern.

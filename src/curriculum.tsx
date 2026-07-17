@@ -229,6 +229,29 @@ export const STAGES: Stage[] = [
     mastery: 'Done when you can play the scale cleanly at 85% or better.',
   },
   {
+    id: 'finger-gym',
+    phase: 'Play in time',
+    title: 'Finger gym: one move at a time',
+    time: 'Daily, 5–10 min',
+    concept: (
+      <p>
+        Clean piping is really clean <strong>note-to-note moves</strong>. The <strong>Finger gym</strong> in the Play tab
+        drills one move at a time — snap a finger up to go higher, tap it down to go lower — until each change is crisp.
+        Master the moves here and tunes fall into place.
+      </p>
+    ),
+    ctas: [
+      { label: 'Start with Low A ↔ B', preset: { tab: 'play', playMode: 'feel', exerciseId: 'gym-a-b' } },
+      { label: 'Then the D ↔ E crossing', preset: { tab: 'play', playMode: 'feel', exerciseId: 'gym-d-e' } },
+    ],
+    checklist: [
+      'Pick a Finger gym drill and watch the cue under the diagram — which finger snaps up or taps down.',
+      'Play it slowly and evenly; keep the hand that isn’t moving completely still.',
+      'Work up the list — bottom-hand moves first, then top hand, then the two-handed crossings.',
+    ],
+    mastery: 'Done when each move snaps cleanly on the beat, with no hesitation between the two notes.',
+  },
+  {
     id: 'steady-rhythm',
     phase: 'Play in time',
     title: 'Steady rhythm',
@@ -277,7 +300,7 @@ export const STAGES: Stage[] = [
     concept: (
       <p>
         Time for real music. Read <strong>Amazing Grace</strong> plain — melody only, no ornaments yet — then feel its
-        pulse. (This setting is a working draft while the exact notes are finalised.)
+        pulse.
       </p>
     ),
     ctas: [
@@ -292,7 +315,32 @@ export const STAGES: Stage[] = [
     mastery: 'Done when you can play the tune plainly and steadily from beginning to end.',
   },
 
-  // ── Phase 5 — Onto the pipes ──────────────────────────────────────
+  // ── Phase 5 — Your first ornaments ────────────────────────────────
+  {
+    id: 'first-grace',
+    phase: 'Your first ornaments',
+    title: 'Your first grace note',
+    time: '10 min/session',
+    concept: (
+      <p>
+        Once a tune is solid <em>plain</em>, you start decorating it. The first ornament is the{' '}
+        <strong>high-G gracenote</strong> — a flick of the top-hand index that separates two of the same note and gives
+        each note a crisp edge. Drill it in the <strong>Grace notes</strong> tab, then hear it on the staff.
+      </p>
+    ),
+    ctas: [
+      { label: 'Drill the high-G gracenote', preset: { tab: 'play', playMode: 'feel', exerciseId: 'orn-hg-b' } },
+      { label: 'Read it on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'orn-hg-d' } },
+    ],
+    checklist: [
+      'Play a high-G gracenote drill slowly — flick the top index up and straight back for each note.',
+      'Listen for a clean break between the repeated notes, with no lump or double-sound.',
+      'Only speed up once the gracenote is crisp and the main note still lands on the beat.',
+    ],
+    mastery: 'Done when the gracenote is a clean flick and the melody note stays dead on the beat.',
+  },
+
+  // ── Phase 6 — Onto the pipes ──────────────────────────────────────
   {
     id: 'to-the-pipes',
     phase: 'Onto the pipes',
