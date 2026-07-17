@@ -232,9 +232,11 @@ export function NotationBasics() {
         simply than the piano or guitar music you may have seen before.
       </p>
       <p>
-        Like almost all instrumental music, pipe tunes are written on a standard five-line staff in{' '}
-        <strong>treble clef</strong>. That part is completely ordinary. What is unusual is how little
-        else there is to learn.
+        Pipe tunes are written on a <strong>staff</strong> — the five horizontal lines, with four
+        spaces between them, that the notes sit on; the higher up the staff a note sits, the higher it
+        sounds. At the far left is a <strong>clef</strong>, a symbol that fixes which line means which
+        note, and pipe music always uses the same one. That part is completely ordinary. What is
+        unusual is how little else there is to learn.
       </p>
       <FactList
         items={[
@@ -246,7 +248,7 @@ export function NotationBasics() {
           {
             term: 'No sharps or flats',
             detail:
-              'A written note always means its plain, natural letter. Pipe music is never written with a key signature and essentially never uses an accidental.',
+              'A written note always means its plain letter — an A is an A, a C is a C. The extra symbols other instruments use to nudge a note up or down never appear here.',
           },
           {
             term: 'One range, forever',
@@ -257,11 +259,11 @@ export function NotationBasics() {
       />
       <Callout kind="why" title="Why this matters">
         The chanter is a <strong>fixed-pitch instrument</strong> — every fingering produces one exact
-        pitch that never bends or slides. Because there is nothing to adjust by ear, there is no need
-        for accidentals to warn you about it, and no need for a key signature to set one up. Most
+        pitch that never bends or slides. Because there is nothing to adjust by ear, none of the extra
+        note-raising or note-lowering symbols other instruments' music leans on are ever needed. Most
         instruments take years to sight-read fluently because their music can span many octaves and
-        many keys. The chanter's tiny, fixed range is exactly why piping is one of the fastest
-        instruments to learn to read.
+        shift between many keys. The chanter's tiny, fixed range is exactly why piping is one of the
+        fastest instruments to learn to read.
       </Callout>
       <p>
         The next lesson maps each of the nine notes onto the staff, so you can look at any bar of
@@ -301,10 +303,8 @@ export function RhythmBasics() {
       </p>
       <FactList
         items={[
-          { term: '2/4 marches', detail: 'Two beats per bar. The most common time signature for Highland marches.' },
-          { term: '6/8 jigs', detail: 'Six beats per bar, felt as two groups of three — the lilting jig feel.' },
-          { term: '4/4 reels & strathspeys', detail: 'Four beats per bar. Strathspeys add a distinctive snapping dotted rhythm.' },
-          { term: '3/4 and 9/8', detail: 'Used for waltzes and retreat marches, among others.' },
+          { term: 'The top number', detail: 'How many beats are in each bar — two in 2/4, six in 6/8 (felt as two groups of three).' },
+          { term: 'The bottom number', detail: 'Which kind of note counts as one beat. You don’t have to work this out to play — the Play tab counts the beats for you.' },
         ]}
       />
       <Callout kind="tip" title="You already know this feel">
@@ -331,7 +331,7 @@ export function StaffNotes() {
           { term: 'Low G', detail: 'The 2nd line from the bottom. The very bottom line of the staff is not used by any chanter note.' },
           { term: 'Low A → F', detail: 'From there, each note climbs one line or space at a time — Low A, B, C, D, E, F — right up to F on the top line.' },
           { term: 'High G', detail: 'Floats just above the staff, in the open space above the top line. No ledger line needed.' },
-          { term: 'High A', detail: 'One step higher still, sitting on a short ledger line drawn above the staff — the only note that needs one.' },
+          { term: 'High A', detail: 'One step higher still, sitting on a short extra line drawn just above the staff — a “ledger line” — the only note that needs one.' },
         ]}
       />
       <Callout kind="tip" title="Cross-check it by ear">

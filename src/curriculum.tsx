@@ -37,6 +37,10 @@ export type Stage = {
 // The Guide is a coaching path, not a textbook: each stage explains one idea in
 // a few sentences, then sends the learner into the Scale / Play / Explore tabs
 // to actually do it. The longer prose lives behind each stage's "Why it works".
+//
+// Ordering note: the learner PLAYS in time (feel the pulse) before learning to
+// READ rhythm — so "beat" and "time signature" land on something already felt in
+// the hands, not cold theory. Reading then comes right before real tunes.
 export const STAGES: Stage[] = [
   // ── Phase 1 — Meet the instrument ─────────────────────────────────
   {
@@ -153,59 +157,7 @@ export const STAGES: Stage[] = [
     mastery: 'Done when you can name any note and find its fingering without looking it up.',
   },
 
-  // ── Phase 3 — Reading the music ───────────────────────────────────
-  {
-    id: 'notation-why',
-    phase: 'Reading the music',
-    title: 'Why bagpipe notation is simple',
-    time: '5 min',
-    concept: (
-      <p>
-        Pipe music uses one clef, one small range, and no sharps or flats. Because the chanter is a fixed-pitch
-        instrument, reading it is one of the simplest jobs in music.
-      </p>
-    ),
-    why: () => <NotationBasics />,
-  },
-  {
-    id: 'staff-notes',
-    phase: 'Reading the music',
-    title: 'The staff, note by note',
-    time: '10 min/session',
-    concept: (
-      <p>
-        Each of the nine notes has one fixed spot on the staff. Learn the spots, then hear them: the{' '}
-        <strong>Read the music</strong> mode lights each note on the staff as it plays.
-      </p>
-    ),
-    ctas: [
-      { label: 'Read the scale on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'scale-up' } },
-      { label: 'Cross-check in Explore', preset: { tab: 'play', playMode: 'notes' } },
-    ],
-    checklist: [
-      'Study where each note sits (Low G on the 2nd line, up to High A on a ledger line).',
-      'In Read the music, play “The scale, in time” and watch each note light up on the staff.',
-      'Pause on a note and name it from its staff position before you look at the label.',
-    ],
-    mastery: 'Done when you can name any note from where it sits on the staff.',
-    why: () => <StaffNotes />,
-  },
-  {
-    id: 'rhythm-reading',
-    phase: 'Reading the music',
-    title: 'Reading the rhythm',
-    time: '10 min',
-    concept: (
-      <p>
-        A note’s shape tells you how long to hold it; the time signature groups the beats into bars. Feel that pulse in
-        the <strong>Play</strong> tab.
-      </p>
-    ),
-    ctas: [{ label: 'Feel a steady pulse', preset: { tab: 'play', playMode: 'feel', exerciseId: 'steady-low-a' } }],
-    why: () => <RhythmBasics />,
-  },
-
-  // ── Phase 4 — Play in time ────────────────────────────────────────
+  // ── Phase 3 — Play in time ────────────────────────────────────────
   {
     id: 'scale-in-time',
     phase: 'Play in time',
@@ -273,9 +225,63 @@ export const STAGES: Stage[] = [
     ],
     mastery: 'Done when both patterns sit above 85% at a tempo that feels comfortable.',
   },
+
+  // ── Phase 4 — Reading the music (after you can feel the beat) ──────
+  {
+    id: 'notation-why',
+    phase: 'Reading the music',
+    title: 'Why bagpipe notation is simple',
+    time: '5 min',
+    concept: (
+      <p>
+        Now that you can feel a beat, here’s how the page writes it down. Pipe music uses one clef, one small range, and
+        no sharps or flats — one of the simplest reading jobs in music. <em>Already read music? Skim this phase; the one
+        thing that’s different is where the nine notes sit on the staff, coming up next.</em>
+      </p>
+    ),
+    why: () => <NotationBasics />,
+  },
+  {
+    id: 'staff-notes',
+    phase: 'Reading the music',
+    title: 'The staff, note by note',
+    time: '10 min/session',
+    concept: (
+      <p>
+        Each of the nine notes has one fixed spot on the staff. Learn the spots, then hear them: the{' '}
+        <strong>Read the music</strong> mode lights each note on the staff as it plays.
+      </p>
+    ),
+    ctas: [
+      { label: 'Read the scale on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'scale-up' } },
+      { label: 'Cross-check in Explore', preset: { tab: 'play', playMode: 'notes' } },
+    ],
+    checklist: [
+      'Study where each note sits (Low G on the 2nd line, up to High A on a ledger line).',
+      'In Read the music, play “The scale, in time” and watch each note light up on the staff.',
+      'Pause on a note and name it from its staff position before you look at the label.',
+    ],
+    mastery: 'Done when you can name any note from where it sits on the staff.',
+    why: () => <StaffNotes />,
+  },
+  {
+    id: 'rhythm-reading',
+    phase: 'Reading the music',
+    title: 'Reading the rhythm',
+    time: '10 min',
+    concept: (
+      <p>
+        You’ve already felt this pulse in the Play tab — now here’s how it’s written down. A note’s shape tells you how
+        long to hold it, and the time signature groups the beats into bars.
+      </p>
+    ),
+    why: () => <RhythmBasics />,
+  },
+
+  // ── Phase 5 — Your first tunes ────────────────────────────────────
   {
     id: 'read-along',
-    phase: 'Play in time',
+    phase: 'Your first tunes',
     title: 'Read while you play',
     time: '10 min/session',
     concept: (
@@ -294,7 +300,7 @@ export const STAGES: Stage[] = [
   },
   {
     id: 'first-tune',
-    phase: 'Play in time',
+    phase: 'Your first tunes',
     title: 'Your first tune',
     time: 'Ongoing',
     concept: (
@@ -315,7 +321,7 @@ export const STAGES: Stage[] = [
     mastery: 'Done when you can play the tune plainly and steadily from beginning to end.',
   },
 
-  // ── Phase 5 — Your first ornaments ────────────────────────────────
+  // ── Phase 6 — Your first ornaments ────────────────────────────────
   {
     id: 'first-grace',
     phase: 'Your first ornaments',
@@ -340,7 +346,7 @@ export const STAGES: Stage[] = [
     mastery: 'Done when the gracenote is a clean flick and the melody note stays dead on the beat.',
   },
 
-  // ── Phase 6 — Onto the pipes ──────────────────────────────────────
+  // ── Phase 7 — Onto the pipes ──────────────────────────────────────
   {
     id: 'to-the-pipes',
     phase: 'Onto the pipes',
