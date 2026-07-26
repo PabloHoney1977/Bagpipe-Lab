@@ -69,7 +69,8 @@ export const EXERCISES: Exercise[] = [
   {
     id: 'steady-low-a',
     name: 'Steady Low A',
-    description: 'Eight steady beats on Low A. Feel the pulse before you add anything.',
+    description:
+      'Eight steady beats on Low A. Listen to what happens: on your chanter this is one long note — the reed never stops, so you cannot break it into eight. That is the problem grace notes solve, a few stages from now. For now, just feel the pulse.',
     bpm: 60,
     beatsPerBar: 4,
     notes: Array.from({ length: 8 }, () => ({ note: 'Low A', beats: 1 })),

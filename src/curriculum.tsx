@@ -35,7 +35,7 @@ export type Stage = {
 }
 
 // The Guide is a coaching path, not a textbook: each stage explains one idea in
-// a few sentences, then sends the learner into the Scale / Play / Explore tabs
+// a few sentences, then sends the learner into the Scale / Play tabs
 // to actually do it. The longer prose lives behind each stage's "Why it works".
 //
 // Ordering note: the learner PLAYS in time (feel the pulse) before learning to
@@ -51,7 +51,7 @@ export const STAGES: Stage[] = [
     concept: (
       <p>
         This Guide is your <strong>map</strong>. Each stage explains one small thing, then sends you to the{' '}
-        <strong>Scale</strong>, <strong>Play</strong>, or <strong>Explore</strong> tabs to actually do it. Work top to
+        <strong>Scale</strong> or <strong>Play</strong> tabs to actually do it. Work top to
         bottom, tick off the practice steps, and mark a stage done when it feels solid.
       </p>
     ),
@@ -122,7 +122,7 @@ export const STAGES: Stage[] = [
     time: 'A few sessions',
     concept: (
       <p>
-        Every note is made by sealing holes with the soft pads of your fingers. Open the <strong>Explore</strong> tab to
+        Every note is made by sealing holes with the soft pads of your fingers. Open <strong>Play → Explore notes</strong> to
         see exactly which holes each note needs.
       </p>
     ),
@@ -254,7 +254,7 @@ export const STAGES: Stage[] = [
     ),
     ctas: [
       { label: 'Read the scale on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'scale-up' } },
-      { label: 'Cross-check in Explore', preset: { tab: 'play', playMode: 'notes' } },
+      { label: 'Cross-check in Explore notes', preset: { tab: 'play', playMode: 'notes' } },
     ],
     checklist: [
       'Study where each note sits (Low G on the 2nd line, up to High A on a ledger line).',

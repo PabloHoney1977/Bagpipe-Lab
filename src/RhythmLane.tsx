@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NOTES, playChanterNote, playOrnamentedNote, playClick, resumeAudio } from './chanter'
+import {
+  NOTES,
+  playChanterNoteLegato,
+  playOrnamentedNote,
+  playClick,
+  releaseChanterNote,
+  resumeAudio,
+} from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
+import { loadProgress, loadLatency, recordRun, saveLadderBpm, saveLatency } from './progress'
 import type { Exercise } from './tunes'
 
 type Judgement = 'pending' | 'perfect' | 'good' | 'miss'
@@ -12,6 +20,8 @@ type GameNote = {
   covered: boolean[]
   targetMs: number
   status: Judgement
+  /** signed timing error in ms; positive = tapped late. Undefined until judged. */
+  delta?: number
   cue?: string
   graces: string[]
   graceFreqs: number[]
@@ -23,7 +33,11 @@ type Game = {
   beatTimes: { ms: number; accent: boolean }[]
   nextBeat: number
   lastTargetMs: number
+  leadInMs: number
+  beatMs: number
   endMs: number
+  /** taps that arrived too early to belong to any note — the signature of rushing */
+  earlyStrays: number
 }
 
 const APPROACH_MS = 2000 // how long a note is visible falling before its beat
@@ -33,17 +47,24 @@ const MISS_MS = 220 // a pending note this far past its beat is a miss
 const LANE_HEIGHT = 360
 
 const MASTERY_PCT = 85 // accuracy needed to step the tempo up
+const GOOD_WEIGHT = 0.8 // a Good hit is inside a sixth of a beat: worth most of a note
 const TEMPO_STEP = 6 // bpm added on a clean run
+const MIN_BPM = 40
 const MAX_BPM = 120
-const BEST_KEY = 'bagpipe-lab-best'
 
-function loadBest(): Record<string, number> {
-  try {
-    const raw = localStorage.getItem(BEST_KEY)
-    return raw ? (JSON.parse(raw) as Record<string, number>) : {}
-  } catch {
-    return {}
-  }
+/** Mean signed error worth offering as a device-latency correction. */
+const CALIBRATE_MIN_MS = 45
+/** ...but only when the taps are consistent enough to look systematic, not sloppy. */
+const CALIBRATE_MAX_SPREAD_MS = 90
+
+function mean(xs: number[]) {
+  return xs.reduce((a, b) => a + b, 0) / xs.length
+}
+
+function stdev(xs: number[]) {
+  if (xs.length < 2) return 0
+  const m = mean(xs)
+  return Math.sqrt(mean(xs.map((x) => (x - m) ** 2)))
 }
 
 export function RhythmLane({ exercise }: { exercise: Exercise }) {
@@ -55,26 +76,36 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   const [status, setStatus] = useState<'idle' | 'playing' | 'done'>('idle')
   const [score, setScore] = useState({ perfect: 0, good: 0, miss: 0 })
   const [current, setCurrent] = useState<GameNote | null>(null)
-  const [bpm, setBpm] = useState(exercise.bpm)
-  const [best, setBest] = useState<Record<string, number>>(() => loadBest())
+  const [countIn, setCountIn] = useState(0)
+  const [progress, setProgress] = useState(() => loadProgress())
+  const [bpm, setBpm] = useState(() => loadProgress()[exercise.id]?.bpm ?? exercise.bpm)
+  const [latency, setLatency] = useState(() => loadLatency())
+  const [deltas, setDeltas] = useState<number[]>([])
+  const [strays, setStrays] = useState(0)
 
   const total = exercise.notes.length
 
   const stop = useCallback(() => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
     rafRef.current = null
+    releaseChanterNote()
   }, [])
 
   useEffect(() => () => stop(), [stop])
 
-  // Reset when the exercise changes.
+  // Reset when the exercise changes, picking up where this drill's ladder left off.
   useEffect(() => {
     stop()
     gameRef.current = null
     setStatus('idle')
     setScore({ perfect: 0, good: 0, miss: 0 })
     setCurrent(null)
-    setBpm(exercise.bpm)
+    setCountIn(0)
+    setDeltas([])
+    setStrays(0)
+    const saved = loadProgress()
+    setProgress(saved)
+    setBpm(saved[exercise.id]?.bpm ?? exercise.bpm)
     drawStatic()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise.id])
@@ -97,7 +128,10 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       beatTimes: timed.beatTimes,
       nextBeat: 0,
       lastTargetMs: timed.lastTargetMs,
+      leadInMs: timed.leadInMs,
+      beatMs: timed.beatMs,
       endMs: timed.lastTargetMs + 1200,
+      earlyStrays: 0,
     }
   }
 
@@ -107,8 +141,11 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
     g.startMs = performance.now()
     gameRef.current = g
     setScore({ perfect: 0, good: 0, miss: 0 })
+    setDeltas([])
+    setStrays(0)
     setStatus('playing')
     setCurrent(g.notes[0] ?? null)
+    setCountIn(exercise.beatsPerBar)
     loop()
   }
 
@@ -131,27 +168,41 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   const judge = useCallback(() => {
     const g = gameRef.current
     if (!g || status !== 'playing') return
-    const elapsed = performance.now() - g.startMs
+    // Correct for device latency (touch delay + audio output + render lag)
+    // before judging, so a slow phone doesn't read as a learner with no rhythm.
+    const elapsed = performance.now() - g.startMs - latency
     let best: GameNote | null = null
-    let bestDelta = Infinity
+    let bestDelta = Infinity // signed: positive = tapped late
     for (const n of g.notes) {
       if (n.status !== 'pending') continue
-      const d = Math.abs(n.targetMs - elapsed)
-      if (d < bestDelta) {
+      const d = elapsed - n.targetMs
+      if (Math.abs(d) < Math.abs(bestDelta)) {
         bestDelta = d
         best = n
       }
     }
-    if (!best || bestDelta > GOOD_MS + 60) return // stray tap, ignore
-    best.status = bestDelta <= PERFECT_MS ? 'perfect' : bestDelta <= GOOD_MS ? 'good' : 'miss'
+    if (!best || Math.abs(bestDelta) > GOOD_MS + 60) {
+      // Too far from any note to judge. Count the early ones: a learner who
+      // rushes taps well ahead of the beat, and silently dropping those taps is
+      // what made the commonest beginner fault invisible.
+      if (best && bestDelta < 0) {
+        g.earlyStrays++
+        setStrays(g.earlyStrays)
+      }
+      return
+    }
+    const mag = Math.abs(bestDelta)
+    best.status = mag <= PERFECT_MS ? 'perfect' : mag <= GOOD_MS ? 'good' : 'miss'
+    best.delta = bestDelta
+    setDeltas((prev) => [...prev, bestDelta])
     if (best.status !== 'miss') {
       if (best.graceFreqs.length) playOrnamentedNote(best.graceFreqs, best.freq)
-      else playChanterNote(best.freq)
+      else playChanterNoteLegato(best.freq)
     }
     recount(g)
     setCurrent(nextPending(g))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status, latency])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -175,10 +226,15 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       g.nextBeat++
     }
 
+    // count-in readout: the lane is empty for the first couple of seconds, so
+    // without this the learner just sees a blank rectangle and assumes the
+    // button didn't work.
+    setCountIn(elapsed < g.leadInMs ? Math.ceil((g.leadInMs - elapsed) / g.beatMs) : 0)
+
     // misses
     let changed = false
     for (const n of g.notes) {
-      if (n.status === 'pending' && elapsed - n.targetMs > MISS_MS) {
+      if (n.status === 'pending' && elapsed - latency - n.targetMs > MISS_MS) {
         n.status = 'miss'
         changed = true
       }
@@ -304,38 +360,78 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
         }
       }
     }
+
+    // count-in: fill the otherwise-empty lane with the beats going by
+    if (elapsed < g.leadInMs) {
+      const remaining = Math.ceil((g.leadInMs - elapsed) / g.beatMs)
+      ctx.save()
+      ctx.fillStyle = accent
+      ctx.globalAlpha = 0.85
+      ctx.font = '700 64px system-ui, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(String(remaining), cx, hitY / 2)
+      ctx.globalAlpha = 0.6
+      ctx.font = '600 14px system-ui, sans-serif'
+      ctx.fillText('counting you in', cx, hitY / 2 + 48)
+      ctx.restore()
+    }
   }
 
   const judged = score.perfect + score.good + score.miss
-  const accuracy = judged ? Math.round(((score.perfect + score.good * 0.5) / total) * 100) : 0
+  const accuracy = judged ? Math.round(((score.perfect + score.good * GOOD_WEIGHT) / total) * 100) : 0
   const mastered = status === 'done' && accuracy >= MASTERY_PCT
   const canStepUp = mastered && bpm < MAX_BPM
-  const bestPct = best[exercise.id]
+  const record = progress[exercise.id]
 
-  // Record best accuracy per exercise when a run finishes.
+  // Timing diagnosis: the sign of the error is the most useful thing we can
+  // tell a beginner, and it used to be computed and thrown away.
+  const meanDelta = deltas.length ? mean(deltas) : 0
+  const spread = stdev(deltas)
+  const offerCalibration =
+    status === 'done' &&
+    deltas.length >= 4 &&
+    Math.abs(meanDelta) >= CALIBRATE_MIN_MS &&
+    spread < CALIBRATE_MAX_SPREAD_MS
+
+  // Record the run when it finishes: best accuracy with the tempo it happened
+  // at, plus the ladder position, so both survive a tab switch and a reload.
   useEffect(() => {
     if (status !== 'done') return
-    setBest((prev) => {
-      if (accuracy <= (prev[exercise.id] ?? 0)) return prev
-      const next = { ...prev, [exercise.id]: accuracy }
-      try {
-        localStorage.setItem(BEST_KEY, JSON.stringify(next))
-      } catch {
-        /* ignore */
-      }
-      return next
-    })
+    setProgress((prev) => recordRun(prev, exercise.id, bpm, accuracy))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
-  function stepUpTempo() {
+  function changeTempo(delta: number) {
+    const next = Math.min(MAX_BPM, Math.max(MIN_BPM, bpm + delta))
+    if (next === bpm) return
     stop()
     gameRef.current = null
-    setBpm((b) => Math.min(MAX_BPM, b + TEMPO_STEP))
+    setBpm(next)
+    setProgress((prev) => saveLadderBpm(prev, exercise.id, next))
     setScore({ perfect: 0, good: 0, miss: 0 })
+    setDeltas([])
+    setStrays(0)
     setCurrent(null)
+    setCountIn(0)
     setStatus('idle')
     drawStatic()
+  }
+
+  function applyCalibration() {
+    const next = latency + Math.round(meanDelta)
+    setLatency(next)
+    saveLatency(next)
+  }
+
+  function timingNote() {
+    if (!deltas.length) return 'No taps landed near a note — start with the count-in and tap on each beat.'
+    const dir = meanDelta > 0 ? 'late' : 'early'
+    const ms = Math.abs(Math.round(meanDelta))
+    if (ms >= 35) return `You were on average ${ms}ms ${dir}.`
+    if (strays >= 2) return `You tapped ahead of the beat ${strays} times — settle onto the click.`
+    if (score.miss > 0) return `${score.miss} ${score.miss === 1 ? 'note went' : 'notes went'} by untapped.`
+    return 'Your taps were close, just scattered — the same tempo again will tighten them.'
   }
 
   return (
@@ -354,7 +450,9 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
 
       <div className="rhythm-side">
         <ChanterDiagram covered={current?.covered ?? NOTES[0].covered} />
-        <p className="rhythm-current">{current ? current.name : status === 'done' ? 'Done' : '—'}</p>
+        <p className="rhythm-current">
+          {countIn > 0 ? `Count in… ${countIn}` : current ? current.name : status === 'done' ? 'Done' : '—'}
+        </p>
         {current?.graces.length ? (
           <p className="rhythm-grace">grace: {current.graces.join(' · ')}</p>
         ) : null}
@@ -372,7 +470,7 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
           </button>
         )}
         {canStepUp ? (
-          <button type="button" className="stepup-button" onClick={stepUpTempo}>
+          <button type="button" className="stepup-button" onClick={() => changeTempo(TEMPO_STEP)}>
             Step up to {Math.min(MAX_BPM, bpm + TEMPO_STEP)} bpm ›
           </button>
         ) : (
@@ -383,19 +481,59 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
       </div>
 
       <div className="rhythm-meta">
-        <span className="tempo-badge">{bpm} bpm</span>
-        <span className="best-badge">Best {bestPct != null ? `${bestPct}%` : '—'}</span>
+        <div className="tempo-stepper">
+          <button
+            type="button"
+            className="tempo-btn"
+            onClick={() => changeTempo(-TEMPO_STEP)}
+            disabled={bpm <= MIN_BPM}
+            aria-label="Slower"
+          >
+            –
+          </button>
+          <span className="tempo-badge">{bpm} bpm</span>
+          <button
+            type="button"
+            className="tempo-btn"
+            onClick={() => changeTempo(TEMPO_STEP)}
+            disabled={bpm >= MAX_BPM}
+            aria-label="Faster"
+          >
+            +
+          </button>
+        </div>
+        <span className="best-badge">
+          {record?.bestPct != null
+            ? `Best ${record.bestPct}%${record.bestBpm ? ` @ ${record.bestBpm} bpm` : ''}`
+            : 'Best —'}
+        </span>
         <span className="mastery-target">Reach {MASTERY_PCT}% to speed up</span>
       </div>
 
       {status === 'done' ? (
-        <p className={mastered ? 'run-result is-mastered' : 'run-result'}>
-          {mastered
-            ? bpm >= MAX_BPM
-              ? `Clean at ${bpm} bpm — top of the ladder. Beautiful.`
-              : `Mastered at ${bpm} bpm. Step up when you’re ready.`
-            : `${accuracy}% this run. Aim for ${MASTERY_PCT}% to move the tempo up.`}
-        </p>
+        <div className="run-result-block">
+          <p className={mastered ? 'run-result is-mastered' : 'run-result'}>
+            {mastered
+              ? bpm >= MAX_BPM
+                ? `Timing clean at ${bpm} bpm — top of the ladder. Beautiful.`
+                : `Timing clean at ${bpm} bpm. Step up when you’re ready.`
+              : `${accuracy}% this run. ${timingNote()}`}
+          </p>
+          {!mastered ? (
+            <div className="run-actions">
+              {bpm > MIN_BPM ? (
+                <button type="button" className="retry-slower" onClick={() => changeTempo(-TEMPO_STEP)}>
+                  Slow it to {Math.max(MIN_BPM, bpm - TEMPO_STEP)} bpm
+                </button>
+              ) : null}
+              {offerCalibration ? (
+                <button type="button" className="calibrate-button" onClick={applyCalibration}>
+                  Every tap ran {Math.abs(Math.round(meanDelta))}ms {meanDelta > 0 ? 'late' : 'early'} — adjust for my device
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       ) : null}
 
       <div className="rhythm-score">
@@ -407,7 +545,24 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
 
       <p className="hint">
         Tap the lane, the <strong>Tap</strong> button, or the spacebar as each note crosses the line. Start slow — the tempo
-        steps up only when you play a run clean.
+        steps up only when you play a run clean. This scores your <strong>timing</strong>, not your fingers: play along on
+        your chanter and check the diagram matches your hands.
+        {latency !== 0 ? (
+          <>
+            {' '}
+            Timing is offset by {latency}ms for your device.{' '}
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => {
+                setLatency(0)
+                saveLatency(0)
+              }}
+            >
+              Reset
+            </button>
+          </>
+        ) : null}
       </p>
     </div>
   )

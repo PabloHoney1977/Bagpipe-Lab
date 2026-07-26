@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NOTES, playChanterNote, playOrnamentedNote, playClick, resumeAudio } from './chanter'
+import { NOTES, playChanterNoteLegato, playOrnamentedNote, playClick, releaseChanterNote, resumeAudio } from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
 import type { TimedExercise } from './rhythmEngine'
@@ -60,6 +60,7 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
   const stop = useCallback(() => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
     rafRef.current = null
+    releaseChanterNote()
   }, [])
 
   useEffect(() => () => stop(), [stop])
@@ -122,7 +123,7 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
     while (f.nextNote < t.notes.length && t.notes[f.nextNote].targetMs <= elapsed) {
       const tn = t.notes[f.nextNote]
       if (tn.graceFreqs.length) playOrnamentedNote(tn.graceFreqs, tn.freq)
-      else playChanterNote(tn.freq)
+      else playChanterNoteLegato(tn.freq)
       setCurrentIdx(f.nextNote)
       f.nextNote++
     }

@@ -44,7 +44,7 @@ function App() {
     if (p.playMode) setPlayMode(p.playMode)
     if (p.exerciseId) setPlayExerciseId(p.exerciseId)
     setTab(p.tab)
-    document.querySelector('.app-main')?.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0 })
   }, [])
 
   return (

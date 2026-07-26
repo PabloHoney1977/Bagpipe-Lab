@@ -69,6 +69,91 @@ export function playChanterNote(freq: number) {
   osc.stop(now + 0.9)
 }
 
+// --- the sustained reed ---------------------------------------------------
+//
+// A chanter's reed never stops. Repeating a note does NOT re-attack it: you get
+// one longer note, which is exactly why grace notes exist (they're the only way
+// to separate two of the same note). Sounding repeated notes as separate
+// attacks is the one thing the instrument cannot do, so exercise playback holds
+// a single voice and extends it when the pitch doesn't change.
+
+type Voice = { osc: OscillatorNode; gain: GainNode; freq: number; endsAt: number }
+let voice: Voice | null = null
+
+const SUSTAIN_S = 0.85
+const CROSSFADE_S = 0.015
+
+/**
+ * Sound a melody note as the reed would: a fresh attack on a pitch change, but
+ * a seamless extension when the same note repeats.
+ */
+export function playChanterNoteLegato(freq: number) {
+  const audioCtx = getContext()
+  const now = audioCtx.currentTime
+  const v = voice
+
+  if (v && Math.abs(v.freq - freq) < 0.01 && v.endsAt > now + 0.02) {
+    // Same pitch still sounding — hold it open rather than striking it again.
+    const g = v.gain.gain
+    g.cancelScheduledValues(now)
+    g.setValueAtTime(g.value, now)
+    g.linearRampToValueAtTime(0.2, now + 0.05)
+    g.linearRampToValueAtTime(0, now + SUSTAIN_S)
+    v.endsAt = now + SUSTAIN_S
+    v.osc.stop(now + SUSTAIN_S + 0.02)
+    return
+  }
+
+  if (v && v.endsAt > now) {
+    // Different pitch: duck the old voice out quickly so the change reads as a
+    // fingering move rather than a click.
+    const g = v.gain.gain
+    g.cancelScheduledValues(now)
+    g.setValueAtTime(g.value, now)
+    g.linearRampToValueAtTime(0, now + CROSSFADE_S)
+    v.osc.stop(now + CROSSFADE_S + 0.02)
+  }
+
+  const osc = audioCtx.createOscillator()
+  osc.type = 'sawtooth'
+  osc.frequency.value = freq
+
+  const filter = audioCtx.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.frequency.value = freq * 3.5
+  filter.Q.value = 0.7
+
+  const gain = audioCtx.createGain()
+  gain.gain.setValueAtTime(0, now)
+  gain.gain.linearRampToValueAtTime(0.28, now + 0.02)
+  gain.gain.linearRampToValueAtTime(0.2, now + 0.4)
+  gain.gain.linearRampToValueAtTime(0, now + SUSTAIN_S)
+
+  osc.connect(filter)
+  filter.connect(gain)
+  gain.connect(audioCtx.destination)
+
+  osc.start(now)
+  osc.stop(now + SUSTAIN_S + 0.02)
+
+  voice = { osc, gain, freq, endsAt: now + SUSTAIN_S }
+}
+
+/** Drop the held voice (call when a run stops, so nothing hangs over). */
+export function releaseChanterNote() {
+  const v = voice
+  if (!v || !ctx) return
+  const now = ctx.currentTime
+  if (v.endsAt > now) {
+    const g = v.gain.gain
+    g.cancelScheduledValues(now)
+    g.setValueAtTime(g.value, now)
+    g.linearRampToValueAtTime(0, now + CROSSFADE_S)
+    v.osc.stop(now + CROSSFADE_S + 0.02)
+  }
+  voice = null
+}
+
 /** One reed tone scheduled on the shared context at an absolute time. */
 function scheduleReedTone(
   audioCtx: AudioContext,
@@ -109,6 +194,7 @@ const GRACE_S = 0.045 // grace-note length / spacing, in seconds
  */
 export function playOrnamentedNote(graceFreqs: number[], principalFreq: number) {
   const audioCtx = getContext()
+  releaseChanterNote() // an ornament re-articulates: let any held tone go first
   const t0 = audioCtx.currentTime
   graceFreqs.forEach((f, i) => scheduleReedTone(audioCtx, f, t0 + i * GRACE_S, GRACE_S, 0.2))
   scheduleReedTone(audioCtx, principalFreq, t0 + graceFreqs.length * GRACE_S, 0.85, 0.28)
