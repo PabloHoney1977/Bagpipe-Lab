@@ -10,6 +10,7 @@ import {
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
 import { loadProgress, loadLatency, recordRun, saveLadderBpm, saveLatency } from './progress'
+import { loadSessions, recordPractice } from './sessions'
 import type { Exercise } from './tunes'
 
 type Judgement = 'pending' | 'perfect' | 'good' | 'miss'
@@ -399,6 +400,7 @@ export function RhythmLane({ exercise }: { exercise: Exercise }) {
   useEffect(() => {
     if (status !== 'done') return
     setProgress((prev) => recordRun(prev, exercise.id, bpm, accuracy))
+    recordPractice(loadSessions(), gameRef.current?.endMs ?? 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 

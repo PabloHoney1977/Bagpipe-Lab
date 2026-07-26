@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { NOTES, playChanterNoteLegato, playOrnamentedNote, playClick, releaseChanterNote, resumeAudio } from './chanter'
 import { ChanterDiagram } from './ChanterDiagram'
 import { buildTimedExercise } from './rhythmEngine'
+import { loadSessions, recordPractice } from './sessions'
 import type { TimedExercise } from './rhythmEngine'
 import { NOTE_STEPS, LINE_STEPS, stepToY, ledgerStepsFor } from './staff'
 import type { Exercise } from './tunes'
@@ -134,6 +135,7 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
     if (elapsed >= f.endMs) {
       setStatus('done')
       setCurrentIdx(-1)
+      recordPractice(loadSessions(), f.endMs)
       stop()
       return
     }

@@ -18,6 +18,8 @@ export type ExerciseProgress = {
   bestBpm?: number
   /** finished runs */
   runs: number
+  /** epoch ms of the last finished run — drives spaced review */
+  lastAt?: number
 }
 
 type Store = Record<string, ExerciseProgress>
@@ -68,6 +70,7 @@ export function recordRun(store: Store, id: string, bpm: number, accuracy: numbe
     runs: prev.runs + 1,
     bestPct: improved ? accuracy : prev.bestPct,
     bestBpm: improved ? bpm : prev.bestBpm,
+    lastAt: Date.now(),
   }
   const next = { ...store, [id]: entry }
   save(next)

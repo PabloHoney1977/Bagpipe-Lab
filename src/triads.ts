@@ -74,12 +74,13 @@ function drill(id: string, low: string, high: string, bpm: number, reps = 4): Ex
 // Ordered simplest-move-first: bottom hand, then top hand, then crossings/leaps.
 // (Pairs are our own selection, not Bogart's sequence.)
 export const TRIADS: Exercise[] = [
-  // Bottom hand — left hand stays put.
+  // Bottom hand — left hand stays put. Low G <-> Low A comes first: it is a
+  // single pinky move, the simplest change on the instrument.
+  drill('gym-g-a', 'Low G', 'Low A', 60),
   drill('gym-a-b', 'Low A', 'B', 60),
   drill('gym-b-c', 'B', 'C', 58),
   drill('gym-c-d', 'C', 'D', 58),
   drill('gym-a-d', 'Low A', 'D', 56),
-  drill('gym-g-a', 'Low G', 'Low A', 60),
   // Top hand.
   drill('gym-d-e', 'D', 'E', 54), // the hand crossing
   drill('gym-e-f', 'E', 'F', 56),

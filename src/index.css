@@ -1423,3 +1423,171 @@ body {
 .rhythm-meta { grid-area: meta; }
 .run-result-block { grid-area: result; }
 .rhythm .hint { grid-area: hint; }
+
+/* ---------------------------------------------------------------- */
+/* Practice history, Today's practice, locked drills                */
+/* ---------------------------------------------------------------- */
+
+.practice-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.practice-strip.is-empty {
+  background: transparent;
+}
+
+.practice-strip-line {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.practice-strip-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.practice-streak {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.practice-week,
+.practice-mins {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.practice-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.practice-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+.practice-dot.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.today {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.today-title {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.today-stage,
+.today-drill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.today-stage {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.today-stage:hover,
+.today-drill:hover {
+  border-color: var(--accent);
+}
+
+.today-stage-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.today-stage-title,
+.today-drill-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.today-drill-reason {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.exercise-chip.is-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.62;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.chip-lock {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.chip-unlock {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.chip-unlock::before {
+  content: '· ';
+}
+
+.chip-best {
+  margin-left: 6px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+.exercise-chip.is-active .chip-best {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.exercise-group-lock {
+  margin: -4px 0 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}

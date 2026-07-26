@@ -5,4 +5,4 @@ export type Tab = 'guide' | 'scale' | 'play' | 'embellishments'
 export type PlayMode = 'feel' | 'read' | 'notes'
 
 /** A jump into a tool tab, optionally preconfigured — fired by a Guide stage. */
-export type Preset = { tab: Tab; exerciseId?: string; playMode?: PlayMode }
+export type Preset = { tab: Tab; exerciseId?: string; playMode?: PlayMode; stageId?: string }
