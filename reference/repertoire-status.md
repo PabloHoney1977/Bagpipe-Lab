@@ -104,10 +104,71 @@ the owner-decision queue.**
 
 ---
 
-## Also present, not in the batch message
+## Batch 2 — received 2026-07-26
 
-Two further scans were in the upload folder but not referenced: **Skye Boat
-Song** and **Wings**. Skye Boat Song is PD by age (trad. air; Boulton's words
-1884). **Wings** is unidentified and should be treated as in-copyright until
-established otherwise — a modern pipe-band composition by that name is far more
-likely than a traditional one. Neither has been examined.
+| Tune | Sheet metadata | Rights | Shippable? |
+|---|---|---|---|
+| **Skye Boat Song** | Photo of a published collection, no. 449, "Slow March", 6/8, p.254 | Melody PD (trad. air; Boulton's words 1884). The *book's* setting is that collection's | ✅ Melody yes |
+| **'Gin A 'Were A Baron's Heir** | 6/8, ♩.=42, "Slow Air / March", **two-sharp key signature**, red-dot tutorial. Credited **"Phrasing Arr. L. Bogart 7/2023"** | Melody PD (trad. Scots song). **Phrasing arrangement is Bogart 2023** | ⚠️ Melody only |
+| **Dawning of the Day** | 4/4 march, ♩=81, red/blue-dot tutorial, annotations "Grip / Shake / Dbl", "passing note", "+2 beats IF Called Last Time". Credited **"Arr. Terry Tully · Tutorial Arr. L. Bogart 10/5/2023"** | Air PD (Irish trad., *Fáinne Geal an Lae*). **Setting is Terry Tully's — a living third-party arranger** | ⚠️ Melody only; highest third-party risk after Highland Cathedral |
+| **Wings** | 4/4, 4 systems, no credit, same dot-matrix print as the Bogart material | **Unverified** — treat as modern/in-copyright until established | ⛔ Blocked pending check |
+
+### What this batch establishes
+
+These are a pipe band's **tutorial folder** — teaching sheets circulated inside a
+band, several by living arrangers, one carrying a note to discard a superseded
+version and its mp3. Two involve third parties with no relationship to this
+project: Terry Tully (Dawning of the Day) and the Highland Cathedral composers.
+
+The position is unchanged and workable: **the melodies are overwhelmingly public
+domain and are all we actually need.** What we must not reproduce is the
+arrangers' settings — their ornament choices, phrasing marks, and tutorial
+annotations. Take the tune, generate our own ornaments at the curriculum's stage.
+
+### Bonus: the two-sharp key signature is confirmed
+
+The Baron's Heir sheet carries a visible **two-sharp key signature (F♯, C♯)**.
+That independently confirms claim #1 in
+`reference/reviews/2026-07-26/04-pedagogy.md` — asserted from memory there and
+flagged for checking — and therefore that `content.tsx:246-249`'s "no sharps or
+flats… the extra symbols other instruments use never appear here" is misleading
+to a learner opening a real tune book.
+
+Honest caveat: it is **not universal across these sheets** — Dawning of the Day
+is engraved with no key signature at all. So the accurate statement is that
+published pipe music *commonly* carries two sharps, not always. The fix in
+`content.tsx` should say the sharps are built into the chanter so there is
+nothing to do about them, and that no accidentals appear inside the tune.
+
+### The red-dot convention is worth stealing
+
+Both tutorial sheets colour the embellishment notes red, leaving the melody
+black. That is the app's plain-tunes-first pedagogy rendered on paper — and
+`StaffPlayer` already draws grace noteheads in gold, so the app independently
+arrived at the same idea. Worth keeping and making explicit in the Guide.
+
+---
+
+## Transcription: the colour trick is right, the resolution isn't
+
+The red/black separation solves precisely the problem that defeated the greyscale
+scans — telling grace notes from principals — and it happens to isolate exactly
+the copyright-safe layer. Measured on the two engraved PNGs:
+
+- Colour separation is clean: Baron's Heir 47,559 black ink px vs 466 red;
+  Dawning of the Day 58,014 black vs 1,712 red vs 27 blue.
+- Staff detection is **perfect**: 20 lines = 4 systems × 5, uniform 8.5–8.75px
+  spacing, no indentation problem.
+- **But the images are only 960×1194, so one note step is ~4.3px.** A two-pixel
+  centroid error changes the note. With antialiasing and beams touching
+  noteheads, that is not a margin worth betting a learner's first tune on.
+
+**These were exported from notation software, so the good version exists.** The
+ask is small and specific:
+
+> For Baron's Heir and Dawning of the Day: the **source file** (`.bww`,
+> MuseScore, Sibelius — anything) or a **PDF / 300–600dpi PNG export**. With
+> either, the melody comes out exactly, with no reading step to get wrong.
+
+For the paper-only tunes (batch 1, Wings, Skye Boat Song), note names per bar
+remain the reliable path.
