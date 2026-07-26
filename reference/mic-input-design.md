@@ -134,6 +134,94 @@ moment anyone plays along by ear, and a genuine problem once mic input puts a
 backing tone in the same room as the chanter. **The same calibration that
 profiles the chanter for listening should retune what the app plays.**
 
+## 8a. FEASIBILITY CONFIRMED — measured on real audio, 2026-07-26
+
+Owner supplied a 25.2s phone recording (mp3, 128kbps, 44.1kHz mono, peak 0.80,
+rms 0.094 — clean, not clipped). Analysis: harmonic-sum f0 with octave
+disambiguation, FFT autocorrelation cross-check, 1.45ms-hop transition tracking.
+**Everything the design depended on is confirmed, and one assumption was
+upgraded from "probably fine" to "load-bearing".**
+
+### What is in the file
+
+Two takes of four sustained notes each (~2s per note), ascending, with a ~4s
+break between. Take 1 spans 1.9–9.4s, take 2 spans 13.5–21.2s.
+
+### The measured profile of this chanter
+
+| Note (inferred) | Hz | cents from lowest | nominal | deviation | gap to previous |
+|---|---|---|---|---|---|
+| Low A | 230.5 | 0 | 0 | — | — |
+| B | 257.0 | 188 | 200 | −12 | +188 |
+| C | 284.5 | 364 | 400 | −36 | +176 |
+| D | 304.5 | 482 | 500 | −18 | +118 |
+| E | 349.0 | 718 | 700 | +18 | +236 |
+| F | 401.5 | 961 | 900 | **+61** | +243 |
+| High G | 419.5 | 1037 | 1000 | +37 | **+76** |
+| High A | 460.5 | 1198 | 1200 | −2 | +161 |
+
+**Lowest to highest = 1198 cents — a perfect octave to within 2 cents.** With the
+interval pattern coming out tone·tone·semitone·tone·tone·semitone·tone, which is
+exactly the chanter scale, the reading "Low A up to High A, Low G omitted" is
+strongly supported. **[needs owner] to confirm the note labels** — the intervals
+are measured, the names are inference.
+
+### Findings
+
+1. **Pitch is extremely stable.** ±1–3 cents drift on 7 of 8 notes over 1.3–1.9s
+   (the exception, the first note of take 2, wandered ±8 cents). Measurement
+   precision is far finer than any interval we need to resolve.
+2. **Notes separate with enormous margin.** Adjacent gaps run 76–243 cents
+   against ±1–3 cents of noise — a 25–75× margin. 9-way classification is not a
+   hard problem on this signal.
+3. **The tone never stops.** Strictly inside each take: RMS minimum 0.088 and
+   0.071, **zero frames below silence threshold out of ~1200 each**. The reed
+   sustains continuously through every fingering change, exactly as the
+   instrument's physics require.
+4. **Transitions are near-instant with almost no amplitude change.** Pitch moves
+   between plateaus in **1.5–25ms**, while amplitude dips only **2–17%** —
+   ordinary playing dynamics. This is the design's central premise measured
+   directly: **an energy-based onset detector would have nothing to detect, while
+   the pitch jump of 76–243 cents is unmissable.** The roadmap correction in §1
+   is now empirically justified, not merely argued.
+5. **The harmonic signature is diagnostic of a practice chanter.** Fundamental
+   strongest, **2nd harmonic weak (0.06–0.16), 3rd harmonic stronger than the
+   2nd (0.09–0.30)** — the odd-harmonic pattern of a cylindrical closed pipe,
+   which is what a practice chanter is, as distinct from the conical pipe
+   chanter. It also explains why the fundamentals sit this low: a stopped
+   cylindrical pipe sounds roughly an octave below an open one of similar length.
+   Octave errors were ruled out directly — ACF at f0 is 0.92–0.98 while at 2·f0
+   it is *negative*, and energy at f0/2 is 0.000–0.002.
+
+### The finding that changes a design decision
+
+The owner's instinct that practice chanters are "rarely in tune" is confirmed and
+is **more consequential than it first appeared**:
+
+> **Worst deviation from the nominal scale is +61 cents (F), while the tightest
+> adjacent gap is 76 cents (F→High G).**
+
+So a classifier assuming a theoretical scale would expect F at 900 cents and find
+it at 961 — landing within 15 cents of where **High G actually is**. That is a
+near-certain misclassification, and it would tell a learner they played a wrong
+note when they played correctly.
+
+**Calibration is therefore not a refinement, it is required for correctness** —
+and the profile-the-whole-scale step is required, not just the Low A anchor,
+because the deviations are per-note and not a uniform shift (−36 to +61 cents
+across the range). This is exactly the reasoning in §3, now with numbers behind
+it. Recording a second chanter would confirm the deviations differ per
+instrument, which is the last piece of the argument.
+
+### Bearing on the concert-pitch item (§7)
+
+This chanter's Low A is **230.5 Hz** against `chanter.ts`'s `440.0`. That is not
+a small mistuning; it is most of an octave plus a tone. Note a practice chanter
+and a pipe chanter are pitched differently, so "what should the app play?" is a
+real choice rather than a single correction — **[needs owner]**: tune the
+synthesized voice to practice-chanter pitch, to pipe-chanter pitch, or make it a
+setting the calibration fills in?
+
 ## 8. De-risking — what is actually needed from the owner
 
 **[needs owner]** A phone recording: a **slow scale** (low to high and back) then
