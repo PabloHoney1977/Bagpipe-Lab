@@ -142,6 +142,13 @@ disambiguation, FFT autocorrelation cross-check, 1.45ms-hop transition tracking.
 **Everything the design depended on is confirmed, and one assumption was
 upgraded from "probably fine" to "load-bearing".**
 
+*Measurements below were produced twice by independent implementations (different
+FFT size, search grid and sub-window length). They agree to within **1.4 cents**,
+which is the quantisation of the two search grids — so treat every figure as
+±1.5 cents. Where the two differ the table gives the first run; the second gives
+an octave span of 1199c, worst deviation +62c, tightest gap 75c. No conclusion
+changes.*
+
 ### What is in the file
 
 Two takes of four sustained notes each (~2s per note), ascending, with a ~4s
