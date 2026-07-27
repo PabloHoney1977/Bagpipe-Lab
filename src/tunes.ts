@@ -69,7 +69,7 @@ export const EXERCISES: Exercise[] = [
   {
     id: 'steady-low-a',
     name: 'Steady Low A',
-    description: 'Eight steady beats on Low A. Feel the pulse before you add anything.',
+    description: 'Eight steady beats on Low A. Settle into the pulse before you add anything.',
     bpm: 60,
     beatsPerBar: 4,
     notes: Array.from({ length: 8 }, () => ({ note: 'Low A', beats: 1 })),

@@ -33,8 +33,8 @@ export function Welcome() {
       <FactList
         items={[
           { term: 'Guide', detail: 'This tab. Your step-by-step path — read a stage, then follow its buttons into the tools.' },
-          { term: 'Scale', detail: 'Watch the full octave play, low to high and back, with the fingering leading your eye.' },
-          { term: 'Play', detail: 'Three ways to practise the same patterns: feel the pulse (timing, scored), read the music (staff notation), or explore each note freely.' },
+          { term: 'Scale', detail: 'Explore each note on its own, then watch the whole octave play low to high and back with the fingering leading your eye.' },
+          { term: 'Play', detail: 'Read a tune on the staff and play along on your chanter — slow the tempo down until every note lands clean.' },
           { term: 'Grace notes', detail: 'The embellishments that make piping sound like piping — later, once your tunes are steady.' },
         ]}
       />
@@ -308,11 +308,10 @@ export function RhythmBasics() {
         ]}
       />
       <Callout kind="tip" title="You already know this feel">
-        This is exactly what the <strong>Play</strong> tab's falling-notes lane turns into something
-        you can feel instead of just read: the tempo (bpm) sets the pulse, the time signature sets how
-        the beats group into bars, and each note's length is how long its lane takes to fall. Reading
-        the shapes on a page and feeling the beat in the Play tab are the same skill, from two
-        directions.
+        This is exactly what the <strong>Play</strong> tab makes audible: the tempo (bpm) sets the
+        pulse, the time signature sets how the beats group into bars, and the playhead sweeps across the
+        staff sounding each note in time. Reading the shapes on a page and playing along in the Play tab
+        are the same skill, from two directions.
       </Callout>
     </div>
   )

@@ -4,13 +4,12 @@ import { STAGES, PHASES, stagesInPhase } from './curriculum'
 import type { Stage } from './curriculum'
 import { MeetTheChanter } from './MeetTheChanter'
 import { TheScale } from './TheScale'
-import { RhythmLane } from './RhythmLane'
 import { StaffPlayer } from './StaffPlayer'
 import { EXERCISES } from './tunes'
 import type { Exercise } from './tunes'
 import { TRIADS } from './triads'
 import { ORNAMENT_DRILLS } from './ornaments'
-import type { Tab, PlayMode, Preset } from './nav'
+import type { Tab, ScaleMode, Preset } from './nav'
 
 // All playable exercises across every group, for id lookup and CTA routing.
 const ALL_EXERCISES = [...EXERCISES, ...TRIADS, ...ORNAMENT_DRILLS]
@@ -37,11 +36,11 @@ function saveSet(key: string, set: Set<string>) {
 
 function App() {
   const [tab, setTab] = useState<Tab>('guide')
-  const [playMode, setPlayMode] = useState<PlayMode>('feel')
+  const [scaleMode, setScaleMode] = useState<ScaleMode>('scale')
   const [playExerciseId, setPlayExerciseId] = useState(ALL_EXERCISES[0].id)
 
   const openPreset = useCallback((p: Preset) => {
-    if (p.playMode) setPlayMode(p.playMode)
+    if (p.scaleMode) setScaleMode(p.scaleMode)
     if (p.exerciseId) setPlayExerciseId(p.exerciseId)
     setTab(p.tab)
     document.querySelector('.app-main')?.scrollTo({ top: 0 })
@@ -51,15 +50,8 @@ function App() {
     <div className="app">
       <main className="app-main">
         {tab === 'guide' && <GuideTab openPreset={openPreset} />}
-        {tab === 'scale' && <ScaleTab />}
-        {tab === 'play' && (
-          <PlayTab
-            mode={playMode}
-            setMode={setPlayMode}
-            exerciseId={playExerciseId}
-            setExerciseId={setPlayExerciseId}
-          />
-        )}
+        {tab === 'scale' && <ScaleTab mode={scaleMode} setMode={setScaleMode} />}
+        {tab === 'play' && <PlayTab exerciseId={playExerciseId} setExerciseId={setPlayExerciseId} />}
         {tab === 'embellishments' && <EmbellishmentsTab openPreset={openPreset} />}
       </main>
 
@@ -150,6 +142,13 @@ function GuideTab({ openPreset }: { openPreset: (p: Preset) => void }) {
             {doneCount} of {total} done
           </span>
         </div>
+        <button
+          type="button"
+          className="tune-shortcut"
+          onClick={() => openPreset({ tab: 'play', exerciseId: 'amazing-grace' })}
+        >
+          In a hurry? Hear a real tune ▸
+        </button>
       </header>
 
       <div className="path">
@@ -291,23 +290,29 @@ function ToolHeader({ title, subtitle }: { title: string; subtitle: string }) {
   )
 }
 
-function ScaleTab() {
+function ScaleTab({ mode, setMode }: { mode: ScaleMode; setMode: (m: ScaleMode) => void }) {
   return (
     <div className="tool">
-      <ToolHeader title="The scale" subtitle="Play the octave low to high and back, and watch the fingering move." />
-      <TheScale />
+      <ToolHeader title="Scale" subtitle="Explore each note on its own, then play the whole octave up and down." />
+
+      <div className="segmented">
+        <button type="button" className={mode === 'scale' ? 'seg is-active' : 'seg'} onClick={() => setMode('scale')}>
+          The scale
+        </button>
+        <button type="button" className={mode === 'notes' ? 'seg is-active' : 'seg'} onClick={() => setMode('notes')}>
+          Explore notes
+        </button>
+      </div>
+
+      {mode === 'scale' ? <TheScale /> : <MeetTheChanter />}
     </div>
   )
 }
 
 function PlayTab({
-  mode,
-  setMode,
   exerciseId,
   setExerciseId,
 }: {
-  mode: PlayMode
-  setMode: (m: PlayMode) => void
   exerciseId: string
   setExerciseId: (id: string) => void
 }) {
@@ -315,61 +320,28 @@ function PlayTab({
 
   return (
     <div className="tool">
-      <ToolHeader title="Play" subtitle="Feel the pulse, read the music, or explore each note freely." />
+      <ToolHeader
+        title="Play"
+        subtitle="Read the music on the staff and play along on your chanter — slow it down until every note lands clean."
+      />
 
-      <div className="segmented segmented-3">
-        <button type="button" className={mode === 'feel' ? 'seg is-active' : 'seg'} onClick={() => setMode('feel')}>
-          Feel the pulse
-        </button>
-        <button type="button" className={mode === 'read' ? 'seg is-active' : 'seg'} onClick={() => setMode('read')}>
-          Read the music
-        </button>
-        <button type="button" className={mode === 'notes' ? 'seg is-active' : 'seg'} onClick={() => setMode('notes')}>
-          Explore notes
-        </button>
-      </div>
-
-      {mode === 'notes' ? (
-        <MeetTheChanter />
-      ) : (
-        <>
-          <ExerciseGroup label="Tunes & patterns" items={EXERCISES} activeId={exerciseId} onPick={setExerciseId} />
-          <ExerciseGroup
-            label="Finger gym"
-            hint="Short drills for one finger move at a time."
-            items={TRIADS}
-            activeId={exerciseId}
-            onPick={setExerciseId}
-          />
-          <ExerciseGroup
-            label="Grace notes"
-            hint="Ornament drills — a gracenote flams in before the note."
-            items={ORNAMENT_DRILLS}
-            activeId={exerciseId}
-            onPick={setExerciseId}
-          />
-          <p className="exercise-desc">{exercise.description}</p>
-          {mode === 'feel' ? (
-            <RhythmLane key={exercise.id} exercise={exercise} />
-          ) : (
-            <StaffPlayer key={exercise.id} exercise={exercise} />
-          )}
-          <div className="tool-note">
-            {mode === 'read' ? (
-              <p>
-                <strong>Read the music</strong> shows the exercise as real bagpipe staff notation and plays it for you —
-                follow the moving line on your own chanter. Switch to <strong>Feel the pulse</strong> to be scored on your
-                timing.
-              </p>
-            ) : (
-              <p>
-                <strong>Feel the pulse</strong> scores your timing as notes reach the line. Switch to{' '}
-                <strong>Read the music</strong> to see the same exercise written on the staff and learn to read it.
-              </p>
-            )}
-          </div>
-        </>
-      )}
+      <ExerciseGroup label="Tunes & patterns" items={EXERCISES} activeId={exerciseId} onPick={setExerciseId} />
+      <ExerciseGroup
+        label="Finger gym"
+        hint="Short drills for one finger move at a time."
+        items={TRIADS}
+        activeId={exerciseId}
+        onPick={setExerciseId}
+      />
+      <ExerciseGroup
+        label="Grace notes"
+        hint="Ornament drills — a gracenote flams in before the note."
+        items={ORNAMENT_DRILLS}
+        activeId={exerciseId}
+        onPick={setExerciseId}
+      />
+      <p className="exercise-desc">{exercise.description}</p>
+      <StaffPlayer key={exercise.id} exercise={exercise} />
     </div>
   )
 }
@@ -422,7 +394,7 @@ function EmbellishmentsTab({ openPreset }: { openPreset: (p: Preset) => void }) 
         <p>
           Your first one is the <strong>high-G gracenote</strong>: a quick lift of the top-hand index finger that sounds
           High G for an instant before dropping back to the melody note. Drill it below — the gracenote flams in just
-          before the beat, and you’re scored on the main note’s timing.
+          before the beat. Slow the tempo right down so you can get the finger movement clean before you speed it up.
         </p>
       </div>
 
@@ -430,16 +402,9 @@ function EmbellishmentsTab({ openPreset }: { openPreset: (p: Preset) => void }) 
         <button
           type="button"
           className="cta-button"
-          onClick={() => openPreset({ tab: 'play', playMode: 'feel', exerciseId: 'orn-hg-b' })}
+          onClick={() => openPreset({ tab: 'play', exerciseId: 'orn-hg-b' })}
         >
           Drill the high-G gracenote ›
-        </button>
-        <button
-          type="button"
-          className="cta-button"
-          onClick={() => openPreset({ tab: 'play', playMode: 'read', exerciseId: 'orn-hg-b' })}
-        >
-          Read it on the staff ›
         </button>
       </div>
 

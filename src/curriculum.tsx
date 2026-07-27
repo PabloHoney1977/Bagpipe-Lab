@@ -35,12 +35,12 @@ export type Stage = {
 }
 
 // The Guide is a coaching path, not a textbook: each stage explains one idea in
-// a few sentences, then sends the learner into the Scale / Play / Explore tabs
-// to actually do it. The longer prose lives behind each stage's "Why it works".
+// a few sentences, then sends the learner into the Scale or Play tab to actually
+// do it. The longer prose lives behind each stage's "Why it works".
 //
-// Ordering note: the learner PLAYS in time (feel the pulse) before learning to
-// READ rhythm — so "beat" and "time signature" land on something already felt in
-// the hands, not cold theory. Reading then comes right before real tunes.
+// Ordering note: the learner PLAYS in time before learning to READ rhythm — so
+// "beat" and "time signature" land on something already felt in the hands, not
+// cold theory. Reading then comes right before real tunes.
 export const STAGES: Stage[] = [
   // ── Phase 1 — Meet the instrument ─────────────────────────────────
   {
@@ -51,8 +51,8 @@ export const STAGES: Stage[] = [
     concept: (
       <p>
         This Guide is your <strong>map</strong>. Each stage explains one small thing, then sends you to the{' '}
-        <strong>Scale</strong>, <strong>Play</strong>, or <strong>Explore</strong> tabs to actually do it. Work top to
-        bottom, tick off the practice steps, and mark a stage done when it feels solid.
+        <strong>Scale</strong> or <strong>Play</strong> tab to actually do it. Work top to bottom, tick off the practice
+        steps, and mark a stage done when it feels solid.
       </p>
     ),
     why: () => <Welcome />,
@@ -122,11 +122,11 @@ export const STAGES: Stage[] = [
     time: 'A few sessions',
     concept: (
       <p>
-        Every note is made by sealing holes with the soft pads of your fingers. Open the <strong>Explore</strong> tab to
-        see exactly which holes each note needs.
+        Every note is made by sealing holes with the soft pads of your fingers. Open the <strong>Scale</strong> tab and
+        switch to <strong>Explore notes</strong> to see exactly which holes each note needs.
       </p>
     ),
-    ctas: [{ label: 'Open Explore notes', preset: { tab: 'play', playMode: 'notes' } }],
+    ctas: [{ label: 'Open Explore notes', preset: { tab: 'scale', scaleMode: 'notes' } }],
     checklist: [
       'In Explore notes, tap a few notes and watch which holes fill in on the diagram.',
       'Copy each shape on your own chanter, sealing every covered hole with the finger pad.',
@@ -148,7 +148,7 @@ export const STAGES: Stage[] = [
         <em>and</em> its fingering together.
       </p>
     ),
-    ctas: [{ label: 'Open Explore notes', preset: { tab: 'play', playMode: 'notes' } }],
+    ctas: [{ label: 'Open Explore notes', preset: { tab: 'scale', scaleMode: 'notes' } }],
     checklist: [
       'In Explore notes, tap up from Low G to High A and back, saying each note name aloud.',
       'Play each note on your chanter as you tap it in the app.',
@@ -166,19 +166,19 @@ export const STAGES: Stage[] = [
     concept: (
       <p>
         Put fingers and pulse together: play the whole scale evenly, one note per beat. Watch it first in the{' '}
-        <strong>Scale</strong> tab, then play it for a score.
+        <strong>Scale</strong> tab, then read and play it in time.
       </p>
     ),
     ctas: [
-      { label: 'Watch the scale', preset: { tab: 'scale' } },
-      { label: 'Play the scale in time', preset: { tab: 'play', playMode: 'feel', exerciseId: 'scale-up' } },
+      { label: 'Watch the scale', preset: { tab: 'scale', scaleMode: 'scale' } },
+      { label: 'Play the scale in time', preset: { tab: 'play', exerciseId: 'scale-up' } },
     ],
     checklist: [
       'In the Scale tab, follow the highlighted finger up and down the octave.',
-      'In Feel the pulse, play “The scale, in time” and keep every beat even.',
-      'Reach 85% so the tempo ladder lets you speed up a notch.',
+      'In Play, read “The scale, in time” and land every note even with the metronome.',
+      'Once it’s even, nudge the tempo up a notch.',
     ],
-    mastery: 'Done when you can play the scale cleanly at 85% or better.',
+    mastery: 'Done when you can play the scale cleanly and evenly, start to finish.',
   },
   {
     id: 'finger-gym',
@@ -193,8 +193,8 @@ export const STAGES: Stage[] = [
       </p>
     ),
     ctas: [
-      { label: 'Start with Low A ↔ B', preset: { tab: 'play', playMode: 'feel', exerciseId: 'gym-a-b' } },
-      { label: 'Then the D ↔ E crossing', preset: { tab: 'play', playMode: 'feel', exerciseId: 'gym-d-e' } },
+      { label: 'Start with Low A ↔ B', preset: { tab: 'play', exerciseId: 'gym-a-b' } },
+      { label: 'Then the D ↔ E crossing', preset: { tab: 'play', exerciseId: 'gym-d-e' } },
     ],
     checklist: [
       'Pick a Finger gym drill and watch the cue under the diagram — which finger snaps up or taps down.',
@@ -210,20 +210,20 @@ export const STAGES: Stage[] = [
     time: 'Daily, 10 min',
     concept: (
       <p>
-        Rhythm is graded before anything fancy. Hold a rock-steady pulse on simple patterns and let the tempo ladder
-        speed you up only when you play clean.
+        Rhythm comes before anything fancy. Hold a rock-steady pulse on simple patterns, and only speed up once you can
+        play them clean.
       </p>
     ),
     ctas: [
-      { label: 'Practise Steady Low A', preset: { tab: 'play', playMode: 'feel', exerciseId: 'steady-low-a' } },
-      { label: 'Then Low A & B', preset: { tab: 'play', playMode: 'feel', exerciseId: 'a-b-alternate' } },
+      { label: 'Practise Steady Low A', preset: { tab: 'play', exerciseId: 'steady-low-a' } },
+      { label: 'Then Low A & B', preset: { tab: 'play', exerciseId: 'a-b-alternate' } },
     ],
     checklist: [
-      'Play “Steady Low A” until you hit 85% and can step the tempo up.',
+      'Play “Steady Low A” evenly with the metronome, then step the tempo up a notch.',
       'Move to “Low A & B” — your first finger move on the beat.',
-      'Climb the tempo ladder a notch at a time; never faster than you can play cleanly.',
+      'Climb the tempo a notch at a time; never faster than you can play cleanly.',
     ],
-    mastery: 'Done when both patterns sit above 85% at a tempo that feels comfortable.',
+    mastery: 'Done when you can play both patterns evenly at a tempo that feels comfortable.',
   },
 
   // ── Phase 4 — Reading the music (after you can feel the beat) ──────
@@ -249,16 +249,16 @@ export const STAGES: Stage[] = [
     concept: (
       <p>
         Each of the nine notes has one fixed spot on the staff. Learn the spots, then hear them: the{' '}
-        <strong>Read the music</strong> mode lights each note on the staff as it plays.
+        <strong>Play</strong> tab lights each note on the staff as it plays.
       </p>
     ),
     ctas: [
-      { label: 'Read the scale on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'scale-up' } },
-      { label: 'Cross-check in Explore', preset: { tab: 'play', playMode: 'notes' } },
+      { label: 'Read the scale on the staff', preset: { tab: 'play', exerciseId: 'scale-up' } },
+      { label: 'Cross-check in Explore notes', preset: { tab: 'scale', scaleMode: 'notes' } },
     ],
     checklist: [
       'Study where each note sits (Low G on the 2nd line, up to High A on a ledger line).',
-      'In Read the music, play “The scale, in time” and watch each note light up on the staff.',
+      'In the Play tab, play “The scale, in time” and watch each note light up on the staff.',
       'Pause on a note and name it from its staff position before you look at the label.',
     ],
     mastery: 'Done when you can name any note from where it sits on the staff.',
@@ -286,11 +286,11 @@ export const STAGES: Stage[] = [
     time: '10 min/session',
     concept: (
       <p>
-        Now combine reading and playing. In <strong>Read the music</strong> the notes are written on the staff and light
+        Now combine reading and playing. In the <strong>Play</strong> tab the notes are written on the staff and light
         up in time — follow along on your chanter.
       </p>
     ),
-    ctas: [{ label: 'Read the scale up and down', preset: { tab: 'play', playMode: 'read', exerciseId: 'scale-updown' } }],
+    ctas: [{ label: 'Read the scale up and down', preset: { tab: 'play', exerciseId: 'scale-updown' } }],
     checklist: [
       'Slow the tempo down until you can read each note before the line reaches it.',
       'Play “Scale, up and down” all the way through without losing your place.',
@@ -305,17 +305,14 @@ export const STAGES: Stage[] = [
     time: 'Ongoing',
     concept: (
       <p>
-        Time for real music. Read <strong>Amazing Grace</strong> plain — melody only, no ornaments yet — then feel its
-        pulse.
+        Time for real music. Read <strong>Amazing Grace</strong> plain — melody only, no ornaments yet — and play it
+        through on your chanter.
       </p>
     ),
-    ctas: [
-      { label: 'Read Amazing Grace', preset: { tab: 'play', playMode: 'read', exerciseId: 'amazing-grace' } },
-      { label: 'Feel its pulse', preset: { tab: 'play', playMode: 'feel', exerciseId: 'amazing-grace' } },
-    ],
+    ctas: [{ label: 'Read Amazing Grace', preset: { tab: 'play', exerciseId: 'amazing-grace' } }],
     checklist: [
-      'Read it through slowly in Read the music, naming notes as they light up.',
-      'Switch to Feel the pulse and play it in time.',
+      'Read it through slowly in the Play tab, naming notes as they light up.',
+      'Play along on your chanter, staying with the metronome.',
       'Build it up until you can play the whole tune plainly, start to finish.',
     ],
     mastery: 'Done when you can play the tune plainly and steadily from beginning to end.',
@@ -335,8 +332,8 @@ export const STAGES: Stage[] = [
       </p>
     ),
     ctas: [
-      { label: 'Drill the high-G gracenote', preset: { tab: 'play', playMode: 'feel', exerciseId: 'orn-hg-b' } },
-      { label: 'Read it on the staff', preset: { tab: 'play', playMode: 'read', exerciseId: 'orn-hg-d' } },
+      { label: 'Drill the high-G gracenote', preset: { tab: 'play', exerciseId: 'orn-hg-b' } },
+      { label: 'Then try it on D', preset: { tab: 'play', exerciseId: 'orn-hg-d' } },
     ],
     checklist: [
       'Play a high-G gracenote drill slowly — flick the top index up and straight back for each note.',

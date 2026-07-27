@@ -249,6 +249,7 @@ export function StaffPlayer({ exercise }: { exercise: Exercise }) {
         <p className="staffplay-current">
           {current ? current.name : countIn > 0 ? `Count in… ${countIn}` : status === 'done' ? 'Done' : 'Ready'}
         </p>
+        {current?.cue ? <p className="staffplay-cue">{current.cue}</p> : null}
       </div>
 
       <div className="staffplay-controls">
