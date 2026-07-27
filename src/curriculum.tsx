@@ -210,16 +210,16 @@ export const STAGES: Stage[] = [
     time: 'Daily, 10 min',
     concept: (
       <p>
-        Rhythm comes before anything fancy. Hold a rock-steady pulse on simple patterns, and only speed up once you can
-        play them clean.
+        Rhythm comes before anything fancy. Start by holding one note dead steady in time, then put your first finger
+        move on the beat — and only speed up once it’s clean.
       </p>
     ),
     ctas: [
-      { label: 'Practise Steady Low A', preset: { tab: 'play', exerciseId: 'steady-low-a' } },
+      { label: 'Hold a steady Low A', preset: { tab: 'play', exerciseId: 'steady-low-a' } },
       { label: 'Then Low A & B', preset: { tab: 'play', exerciseId: 'a-b-alternate' } },
     ],
     checklist: [
-      'Play “Steady Low A” evenly with the metronome, then step the tempo up a notch.',
+      'Hold “Steady Low A” even and unwavering across all eight beats — no wobble in pitch or volume.',
       'Move to “Low A & B” — your first finger move on the beat.',
       'Climb the tempo a notch at a time; never faster than you can play cleanly.',
     ],

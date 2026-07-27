@@ -69,10 +69,11 @@ export const EXERCISES: Exercise[] = [
   {
     id: 'steady-low-a',
     name: 'Steady Low A',
-    description: 'Eight steady beats on Low A. Settle into the pulse before you add anything.',
+    description:
+      'Hold one long, steady Low A right through the beat — even blowing, no finger moves yet. A chanter can’t re-strike a note without a gracenote, so on its own it stays one sustained tone.',
     bpm: 60,
     beatsPerBar: 4,
-    notes: Array.from({ length: 8 }, () => ({ note: 'Low A', beats: 1 })),
+    notes: [{ note: 'Low A', beats: 8 }],
   },
   {
     id: 'a-b-alternate',
