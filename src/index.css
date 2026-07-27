@@ -1063,6 +1063,67 @@ body {
   cursor: default;
 }
 
+/* Play tab — chanter tuning control */
+.tuning {
+  margin: 22px auto 0;
+  max-width: 420px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.tuning-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tuning-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tuning-value {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.tuning-slider {
+  width: 100%;
+  margin: 10px 0 12px;
+  accent-color: var(--accent);
+}
+
+.tuning-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tuning-preset {
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.tuning-preset.is-active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.tuning-hint {
+  margin-top: 10px;
+}
+
 /* ---------------------------------------------------------------- */
 /* Play tab — segmented control, exercise picker, rhythm game       */
 /* ---------------------------------------------------------------- */

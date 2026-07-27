@@ -9,6 +9,7 @@ import { EXERCISES } from './tunes'
 import type { Exercise } from './tunes'
 import { TRIADS } from './triads'
 import { ORNAMENT_DRILLS } from './ornaments'
+import { setTuningRatio, TUNING_DEFAULT_LOW_A, TUNING_MIN_LOW_A, TUNING_MAX_LOW_A } from './chanter'
 import type { Tab, ScaleMode, Preset } from './nav'
 
 // All playable exercises across every group, for id lookup and CTA routing.
@@ -16,6 +17,7 @@ const ALL_EXERCISES = [...EXERCISES, ...TRIADS, ...ORNAMENT_DRILLS]
 
 const STORAGE_KEY = 'bagpipe-lab-progress' // stage ids marked done
 const CHECK_KEY = 'bagpipe-lab-checklist' // per-item checklist ticks
+const TUNING_KEY = 'bagpipe-lab-tuning' // chanter Low A reference pitch in Hz
 
 function loadSet(key: string): Set<string> {
   try {
@@ -38,6 +40,25 @@ function App() {
   const [tab, setTab] = useState<Tab>('guide')
   const [scaleMode, setScaleMode] = useState<ScaleMode>('scale')
   const [playExerciseId, setPlayExerciseId] = useState(ALL_EXERCISES[0].id)
+  const [lowAHz, setLowAHz] = useState<number>(() => {
+    try {
+      const raw = Number(localStorage.getItem(TUNING_KEY))
+      if (raw >= TUNING_MIN_LOW_A && raw <= TUNING_MAX_LOW_A) return raw
+    } catch {
+      /* ignore storage failures */
+    }
+    return TUNING_DEFAULT_LOW_A
+  })
+
+  // Apply + persist the global tuning whenever it changes (and on mount).
+  useEffect(() => {
+    setTuningRatio(lowAHz / TUNING_DEFAULT_LOW_A)
+    try {
+      localStorage.setItem(TUNING_KEY, String(lowAHz))
+    } catch {
+      /* ignore storage failures */
+    }
+  }, [lowAHz])
 
   const openPreset = useCallback((p: Preset) => {
     if (p.scaleMode) setScaleMode(p.scaleMode)
@@ -51,7 +72,14 @@ function App() {
       <main className="app-main">
         {tab === 'guide' && <GuideTab openPreset={openPreset} />}
         {tab === 'scale' && <ScaleTab mode={scaleMode} setMode={setScaleMode} />}
-        {tab === 'play' && <PlayTab exerciseId={playExerciseId} setExerciseId={setPlayExerciseId} />}
+        {tab === 'play' && (
+          <PlayTab
+            exerciseId={playExerciseId}
+            setExerciseId={setPlayExerciseId}
+            lowAHz={lowAHz}
+            setLowAHz={setLowAHz}
+          />
+        )}
         {tab === 'embellishments' && <EmbellishmentsTab openPreset={openPreset} />}
       </main>
 
@@ -312,9 +340,13 @@ function ScaleTab({ mode, setMode }: { mode: ScaleMode; setMode: (m: ScaleMode) 
 function PlayTab({
   exerciseId,
   setExerciseId,
+  lowAHz,
+  setLowAHz,
 }: {
   exerciseId: string
   setExerciseId: (id: string) => void
+  lowAHz: number
+  setLowAHz: (hz: number) => void
 }) {
   const exercise = ALL_EXERCISES.find((e) => e.id === exerciseId) ?? ALL_EXERCISES[0]
 
@@ -342,6 +374,50 @@ function PlayTab({
       />
       <p className="exercise-desc">{exercise.description}</p>
       <StaffPlayer key={exercise.id} exercise={exercise} />
+      <TuningControl hz={lowAHz} setHz={setLowAHz} />
+    </div>
+  )
+}
+
+const TUNING_PRESETS = [
+  { label: 'Concert', hz: 440 },
+  { label: 'Solo', hz: 466 },
+  { label: 'Band', hz: 480 },
+]
+
+function TuningControl({ hz, setHz }: { hz: number; setHz: (hz: number) => void }) {
+  return (
+    <div className="tuning">
+      <div className="tuning-head">
+        <span className="tuning-label">Chanter pitch</span>
+        <span className="tuning-value">Low A = {hz} Hz</span>
+      </div>
+      <input
+        type="range"
+        className="tuning-slider"
+        min={TUNING_MIN_LOW_A}
+        max={TUNING_MAX_LOW_A}
+        step={1}
+        value={hz}
+        onChange={(e) => setHz(Number(e.target.value))}
+        aria-label="Chanter pitch — Low A reference in hertz"
+      />
+      <div className="tuning-presets">
+        {TUNING_PRESETS.map((p) => (
+          <button
+            key={p.label}
+            type="button"
+            className={hz === p.hz ? 'tuning-preset is-active' : 'tuning-preset'}
+            onClick={() => setHz(p.hz)}
+          >
+            {p.label} · {p.hz}
+          </button>
+        ))}
+      </div>
+      <p className="hint tuning-hint">
+        Playing along on a real chanter? Sound a steady Low A and drag until the app matches its pitch — band chanters
+        ring sharp, solo and practice chanters lower. This shifts only the sound, never the notes or fingering.
+      </p>
     </div>
   )
 }

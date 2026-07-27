@@ -41,18 +41,41 @@ function getContext(): AudioContext {
   return ctx
 }
 
+// ── Global tuning ─────────────────────────────────────────────────────────
+// A real chanter's pitch varies by instrument (band chanters run sharp of
+// concert; solo and practice chanters sit lower), so every synthesized note is
+// scaled by one global ratio to match the student's own chanter for play-along.
+// 1.0 = the notated reference (Low A = 440 Hz). All notes scale together, so
+// intervals are preserved — only the overall pitch level moves, not the notes
+// or fingering. The metronome click is deliberately left unscaled.
+export const TUNING_DEFAULT_LOW_A = 440
+export const TUNING_MIN_LOW_A = 430
+export const TUNING_MAX_LOW_A = 490
+
+let tuningRatio = 1
+
+/** Set the global pitch ratio (e.g. lowAHz / 440). Ignores invalid values. */
+export function setTuningRatio(ratio: number) {
+  if (ratio > 0 && Number.isFinite(ratio)) tuningRatio = ratio
+}
+
+export function getTuningRatio(): number {
+  return tuningRatio
+}
+
 /** Synthesized stand-in reed tone, pending recorded chanter samples. */
 export function playChanterNote(freq: number) {
   const audioCtx = getContext()
   const now = audioCtx.currentTime
+  const f = freq * tuningRatio
 
   const osc = audioCtx.createOscillator()
   osc.type = 'sawtooth'
-  osc.frequency.value = freq
+  osc.frequency.value = f
 
   const filter = audioCtx.createBiquadFilter()
   filter.type = 'lowpass'
-  filter.frequency.value = freq * 3.5
+  filter.frequency.value = f * 3.5
   filter.Q.value = 0.7
 
   const gain = audioCtx.createGain()
@@ -77,13 +100,14 @@ function scheduleReedTone(
   dur: number,
   peak: number,
 ) {
+  const f = freq * tuningRatio
   const osc = audioCtx.createOscillator()
   osc.type = 'sawtooth'
-  osc.frequency.value = freq
+  osc.frequency.value = f
 
   const filter = audioCtx.createBiquadFilter()
   filter.type = 'lowpass'
-  filter.frequency.value = freq * 3.5
+  filter.frequency.value = f * 3.5
   filter.Q.value = 0.7
 
   const gain = audioCtx.createGain()
