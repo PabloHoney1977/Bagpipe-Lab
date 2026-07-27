@@ -25,3 +25,8 @@ dist-ssr
 
 # Local manual photo archive (copyrighted scans — never commit)
 /Photos-1-001.zip
+
+# Local reference photos of copyrighted sheet music — never commit (public repo)
+Photos-1-001/
+Photos-1-001-jpg/
+_v.mjs
