@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { STAGES, PHASES, stagesInPhase } from './curriculum'
 import type { Stage } from './curriculum'
@@ -10,6 +10,7 @@ import type { Exercise } from './tunes'
 import { TRIADS } from './triads'
 import { ORNAMENT_DRILLS } from './ornaments'
 import { setTuningRatio, TUNING_DEFAULT_LOW_A, TUNING_MIN_LOW_A, TUNING_MAX_LOW_A } from './chanter'
+import { detectChanterLowA } from './tuner'
 import type { Tab, ScaleMode, Preset } from './nav'
 
 // All playable exercises across every group, for id lookup and CTA routing.
@@ -385,13 +386,67 @@ const TUNING_PRESETS = [
   { label: 'Band', hz: 480 },
 ]
 
+type TuneStatus = 'idle' | 'listening' | 'done' | 'error'
+
 function TuningControl({ hz, setHz }: { hz: number; setHz: (hz: number) => void }) {
+  const [status, setStatus] = useState<TuneStatus>('idle')
+  const [level, setLevel] = useState(0)
+  const [msg, setMsg] = useState('')
+  const activeRef = useRef(true)
+  useEffect(() => {
+    // Set on mount (not just cleared on cleanup): under StrictMode the effect
+    // runs mount→cleanup→mount, which would otherwise leave this stuck false.
+    activeRef.current = true
+    return () => {
+      activeRef.current = false
+    }
+  }, [])
+
+  async function tune() {
+    setStatus('listening')
+    setLevel(0)
+    setMsg('')
+    const result = await detectChanterLowA((l) => {
+      if (activeRef.current) setLevel(l)
+    })
+    if (!activeRef.current) return
+    if (result.ok) {
+      const tuned = Math.round(Math.min(TUNING_MAX_LOW_A, Math.max(TUNING_MIN_LOW_A, result.hz)))
+      setHz(tuned)
+      setStatus('done')
+      setMsg(`Tuned! Low A = ${tuned} Hz`)
+      window.setTimeout(() => {
+        if (activeRef.current) setStatus('idle')
+      }, 2400)
+    } else {
+      setStatus('error')
+      setMsg(
+        result.reason === 'denied'
+          ? 'Mic access is off — allow it, or set the pitch by hand below.'
+          : 'Couldn’t hear a clear Low A — try again somewhere quieter.',
+      )
+    }
+  }
+
+  const listening = status === 'listening'
   return (
     <div className="tuning">
       <div className="tuning-head">
         <span className="tuning-label">Chanter pitch</span>
         <span className="tuning-value">Low A = {hz} Hz</span>
       </div>
+
+      <button type="button" className="tune-mic-btn" onClick={tune} disabled={listening}>
+        {listening ? 'Listening… play a steady Low A' : 'Tune to your chanter ♪'}
+      </button>
+      {listening ? (
+        <div className="tune-level" aria-hidden="true">
+          <div className="tune-level-fill" style={{ width: `${Math.round(level * 100)}%` }} />
+        </div>
+      ) : null}
+      {msg ? <p className={status === 'error' ? 'tune-msg is-error' : 'tune-msg'}>{msg}</p> : null}
+
+      <p className="tuning-or">or set it by hand</p>
       <input
         type="range"
         className="tuning-slider"
@@ -401,6 +456,7 @@ function TuningControl({ hz, setHz }: { hz: number; setHz: (hz: number) => void 
         value={hz}
         onChange={(e) => setHz(Number(e.target.value))}
         aria-label="Chanter pitch — Low A reference in hertz"
+        disabled={listening}
       />
       <div className="tuning-presets">
         {TUNING_PRESETS.map((p) => (
@@ -409,14 +465,15 @@ function TuningControl({ hz, setHz }: { hz: number; setHz: (hz: number) => void 
             type="button"
             className={hz === p.hz ? 'tuning-preset is-active' : 'tuning-preset'}
             onClick={() => setHz(p.hz)}
+            disabled={listening}
           >
             {p.label} · {p.hz}
           </button>
         ))}
       </div>
       <p className="hint tuning-hint">
-        Playing along on a real chanter? Sound a steady Low A and drag until the app matches its pitch — band chanters
-        ring sharp, solo and practice chanters lower. This shifts only the sound, never the notes or fingering.
+        Tap “Tune to your chanter”, then sound a steady Low A — the app listens and matches its pitch to your
+        instrument. This changes only the sound, never the notes or fingering.
       </p>
     </div>
   )

@@ -49,8 +49,8 @@ function getContext(): AudioContext {
 // intervals are preserved — only the overall pitch level moves, not the notes
 // or fingering. The metronome click is deliberately left unscaled.
 export const TUNING_DEFAULT_LOW_A = 440
-export const TUNING_MIN_LOW_A = 430
-export const TUNING_MAX_LOW_A = 490
+export const TUNING_MIN_LOW_A = 415
+export const TUNING_MAX_LOW_A = 500
 
 let tuningRatio = 1
 
